@@ -1,64 +1,45 @@
-# DeepSeek Harness
+# ERP Agent Harness
 
 English | [中文](README.zh.md)
 
-DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
+ERP Agent Harness provides a desktop assistant for AI Native ERP. Sign in with your ERP account to chat, look up business data, and run authorized operations alongside the ERP management interface. [AI Native ERP](https://github.com/kandboxAI/ai-native-erp) · [DeepSeek Harness upstream](https://github.com/deepseek-ai/deepseek-harness)
 
-It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
+## Run with ERP
 
-Documentation: [https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
-
-This fork includes configurable [ERP desktop integration](integrations/erp/README.md). Before publishing source, follow [public source preparation](docs/cookbook/preparing-open-source.md) to export current files without private repository history or machine settings.
-
-## Developer preview
-
-DeepSeek Harness is in _developer preview_ and iterating rapidly. **THERE WILL BE COMPATIBILITY-BREAKING CHANGES.**
-
-Review the [safety notice](SAFETY.md) before running the project.
-
-## Run
-
-### Run from `npm`
-
-Install `Node.js`, then run:
+1. Prepare the matching ERP and Harness versions listed in the release notes. Follow the ERP setup guide to prepare PostgreSQL and Redis, start FastAPI and the ERP management frontend, and verify browser login. Keep both services running. [ERP setup guide](https://github.com/kandboxAI/ai-native-erp/blob/main/README.md)
+2. Use Node.js 24.9 or later and the pnpm version declared in `package.json`. Review the safety notice, then clone Harness in a separate terminal. If the release notes specify a different tag or commit, check it out before running the pnpm commands from the Harness root. [Safety notice](SAFETY.md)
 
 ```sh
-npx @deepseek-ai/dsh web
+git clone https://github.com/kandboxAI/erp-agent-harness.git
+cd erp-agent-harness
 ```
 
-The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).
-
-### Run from source
-
-To run from a repository checkout:
+Build and launch the matching checkout from its root.
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
-pnpm install
-pnpm run build
-pnpm dsh web
+pnpm install --frozen-lockfile
+pnpm build:artifacts
+pnpm dev:desktop:erp
 ```
 
-`pnpm run build` prepares the repository artifacts. `pnpm dsh web` uses those built artifacts without rebuilding.
+The first desktop launch from a clean checkout needs the compiled workspace packages. The desktop launcher loads the ERP frontend at `http://127.0.0.1:8848/` by default. Set `ERP_DEV_URL` in the Harness terminal if Vite uses a different address. [Desktop launch and packaging guide](https://github.com/kandboxAI/ai-native-erp/blob/main/plugins/core/docs/desktop-packaging.md)
 
-## Community and support
+Configure `LLM_GATEWAY_DEEPSEEK_API_KEY` and the model settings in the ERP backend's `plugins/core/backend/.env`, then restart FastAPI. Sign in to ERP in the desktop app and send a short message to the assistant to check model access. [ERP environment template](https://github.com/kandboxAI/ai-native-erp/blob/main/plugins/core/backend/.env.core.example)
 
-- Submit feedback or bug reports through [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions).
-- Add the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic to your plugin repository for discoverability.
-- Join <a href="https://discord.gg/4MrtZUhpxg">DeepSeek Harness Discord community</a>.
+Sync the table and API catalogs for the target ERP tenant before testing business queries. If you use vector retrieval, configure the embedding service before publishing the index. Try asking “List up to five organizations I can access.” ERP checks the account's permissions and data scope. Governed business writes require user confirmation. [Harness catalog and index synchronization](https://github.com/kandboxAI/ai-native-erp/blob/main/plugins/core/docs/harness-sync.md)
 
-## Contributing
+<a id="run"></a>
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+<a id="run-from-source"></a>
+## Run in a browser
+
+Use the clone, install and build commands above to prepare a checkout for standalone chat. Start the Web UI with `pnpm dsh web` from the Harness root. For ERP tool development, `pnpm web:erp` adds the ERP tools to the standard Web UI. The Web launcher uses `http://127.0.0.1:8000/` by default. Set `EDUCATION_ERP_API_URL` if FastAPI uses a different backend address. ERP tool calls require an authenticated ERP session binding. Use the combined desktop above for the integrated ERP sign-in flow. [ERP integration reference](integrations/erp/README.md)
 
 ## Development
 
-Start with the [development guide](docs/development.md) and [architecture documentation](docs/architecture.md).
+DeepSeek Harness is in developer preview and may introduce breaking changes. The upstream project builds its plugin architecture on Cordis. [Cordis](https://github.com/cordiverse/cordis) · [Upstream documentation](https://deepseek-harness.github.io/deepseek-harness/) · [Upstream discussions](https://github.com/deepseek-ai/deepseek-harness/discussions)
 
-`pnpm run dev:web` builds, serves, and rebuilds client bundles on source edits in one terminal, and `make help` lists the matching Make targets for Web and Desktop; the guide's application commands section owns the full table.
-
-For agents, follow [AGENTS.md](AGENTS.md).
+[Development guide](docs/development.md) · [Architecture](docs/architecture.md) · [Contribution guide](CONTRIBUTING.md) · [Coding agent instructions](AGENTS.md) · [Public source preparation](docs/cookbook/preparing-open-source.md)
 
 ## Citation
 
@@ -76,4 +57,4 @@ For agents, follow [AGENTS.md](AGENTS.md).
 
 [MIT](LICENSE)
 
-Third-party dependencies and their licenses are disclosed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+See [third-party notices](THIRD_PARTY_NOTICES.md) for dependency licenses.
