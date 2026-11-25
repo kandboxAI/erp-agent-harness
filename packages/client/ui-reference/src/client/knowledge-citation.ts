@@ -26,7 +26,7 @@ export function registerKnowledgeCitations(ctx: Context): void {
         async loadCitation(address: string, whole: boolean, page: number, signal: AbortSignal) {
           const source = citationSource(address)
           if (source === undefined) throw new Error(t('citation.failed'))
-          const response = await fetch('/api/education/knowledge-citation', {
+          const response = await fetch('/api/erp/knowledge-citation', {
             method: 'POST', credentials: 'same-origin', cache: 'no-store', signal,
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ sessionId, document_id: source.document_id, source_hash_snapshot: source.source_hash_snapshot,

@@ -30,7 +30,7 @@ it('opens a renamed MES menu through the generic Loader plugin and refuses revok
   })
   const tools = ctx.tools
   try {
-    const tool = tools.get('education_erp_open_page')!
+    const tool = tools.get('erp_open_page')!
     const exec = { signal: new AbortController().signal } as never
     expect(await tool.execute({ menu_key: 'MesWorkOrders', query: { page: 2 } }, exec)).toMatchInlineSnapshot(`
       {
@@ -45,6 +45,6 @@ it('opens a renamed MES menu through the generic Loader plugin and refuses revok
     expect(calls.filter(call => call.kind === 'navigate')).toHaveLength(1)
   } finally {
     await ctx.fiber.dispose()
-    expect(tools.get('education_erp_open_page')).toBeUndefined()
+    expect(tools.get('erp_open_page')).toBeUndefined()
   }
 })

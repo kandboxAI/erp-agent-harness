@@ -198,7 +198,7 @@
     "@deepseek-ai/dsh-client-ui-context-menu": "workspace:*",
     "@deepseek-ai/dsh-client-ui-file-actions": "workspace:*",
     "dsh-wechat": "0.16.2",
-    "@deepseek-ai/dsh-tool-education-erp": "workspace:*"
+    "@deepseek-ai/dsh-tool-erp": "workspace:*"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "workspace:~",

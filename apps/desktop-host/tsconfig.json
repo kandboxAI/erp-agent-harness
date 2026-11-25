@@ -81,7 +81,7 @@
       "path": "../../packages/llm/llm-deepseek"
     },
     {
-      "path": "../../packages/integration/tool-education-erp"
+      "path": "../../packages/integration/tool-erp"
     },
     {
       "path": "../../packages/core/tools"

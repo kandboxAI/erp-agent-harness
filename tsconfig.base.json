@@ -30,7 +30,7 @@
     "paths": {
       "@deepseek-ai/dsh-client-ui-ai-control": ["./packages/client/ui-ai-control/src/index.ts"],
       "@deepseek-ai/dsh-client-ui-ai-control/client": ["./packages/client/ui-ai-control/src/client/index.ts"],
-      "@deepseek-ai/dsh-client-ui-education-web": ["./packages/client/ui-education-web/src/index.ts"],
+      "@deepseek-ai/dsh-client-ui-erp-web": ["./packages/client/ui-erp-web/src/index.ts"],
       "@deepseek-ai/dsh-client-ui-file-actions": ["./packages/client/ui-file-actions/src/index.ts"],
       "@deepseek-ai/dsh-client-ui-file-actions/client": ["./packages/client/ui-file-actions/src/client/index.ts"],
       "@deepseek-ai/dsh-client-ui-file-actions/types": ["./packages/client/ui-file-actions/src/types.ts"],
@@ -581,7 +581,7 @@
       "@deepseek-ai/dsh-tool-bash": ["./packages/shell/tool-bash/src"],
       "@deepseek-ai/dsh-tool-bash-persistent": ["./packages/shell/tool-bash-persistent/src"],
       "@deepseek-ai/dsh-tool-cordis": ["./packages/extensions/tool-cordis/src"],
-      "@deepseek-ai/dsh-tool-education-erp": ["./packages/integration/tool-education-erp/src"],
+      "@deepseek-ai/dsh-tool-erp": ["./packages/integration/tool-erp/src"],
       "@deepseek-ai/dsh-tool-executor-native": ["./packages/core/tool-executor-native/src"],
       "@deepseek-ai/dsh-tool-executor-ptc": ["./packages/core/tool-executor-ptc/src"],
       "@deepseek-ai/dsh-tool-fs": ["./packages/fs/tool-fs/src"],

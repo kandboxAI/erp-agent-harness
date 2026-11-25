@@ -33,7 +33,7 @@ Sync the table and API catalogs for the target ERP tenant before testing busines
 <a id="run-from-source"></a>
 ## Run in a browser
 
-Use the clone, install and build commands above to prepare a checkout for standalone chat. Start the Web UI with `pnpm dsh web` from the Harness root. For ERP tool development, `pnpm web:erp` adds the ERP tools to the standard Web UI. The Web launcher uses `http://127.0.0.1:8000/` by default. Set `EDUCATION_ERP_API_URL` if FastAPI uses a different backend address. ERP tool calls require an authenticated ERP session binding. Use the combined desktop above for the integrated ERP sign-in flow. [ERP integration reference](integrations/erp/README.md)
+Use the clone, install and build commands above to prepare a checkout for standalone chat. Start the Web UI with `pnpm dsh web` from the Harness root. For ERP tool development, `pnpm web:erp` adds the ERP tools to the standard Web UI. The Web launcher uses `http://127.0.0.1:8000/` by default. Set `ERP_API_URL` if FastAPI uses a different backend address. ERP tool calls require an authenticated ERP session binding. Use the combined desktop above for the integrated ERP sign-in flow. [ERP integration reference](integrations/erp/README.md)
 
 ## Development
 

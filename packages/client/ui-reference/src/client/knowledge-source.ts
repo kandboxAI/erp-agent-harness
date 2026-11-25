@@ -1,9 +1,9 @@
 import type { Branded } from '@deepseek-ai/dsh-brand'
 
 interface CitationSource {
-  document_id: Branded<'EducationKnowledgeDocumentId'>
+  document_id: Branded<'ErpKnowledgeDocumentId'>
   source_hash_snapshot: string
-  chunk_no: Branded<'EducationKnowledgeChunkNo'>
+  chunk_no: Branded<'ErpKnowledgeChunkNo'>
 }
 
 /**

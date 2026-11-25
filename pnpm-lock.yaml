@@ -862,9 +862,9 @@ importers:
       '@deepseek-ai/dsh-client-ui-ai-control':
         specifier: workspace:*
         version: link:../../packages/client/ui-ai-control
-      '@deepseek-ai/dsh-client-ui-education-web':
+      '@deepseek-ai/dsh-client-ui-erp-web':
         specifier: workspace:*
-        version: link:../../packages/client/ui-education-web
+        version: link:../../packages/client/ui-erp-web
       '@deepseek-ai/dsh-deepseek-account':
         specifier: workspace:*
         version: link:../../packages/credentials/deepseek-account
@@ -895,9 +895,9 @@ importers:
       '@deepseek-ai/dsh-skill-office':
         specifier: workspace:*
         version: link:../../packages/skill/skill-office
-      '@deepseek-ai/dsh-tool-education-erp':
+      '@deepseek-ai/dsh-tool-erp':
         specifier: workspace:*
-        version: link:../../packages/integration/tool-education-erp
+        version: link:../../packages/integration/tool-erp
       '@deepseek-ai/dsh-tool-workspace-dependencies':
         specifier: workspace:*
         version: link:../../packages/skill/tool-workspace-dependencies
@@ -3325,9 +3325,9 @@ importers:
       '@deepseek-ai/dsh-tool-cordis':
         specifier: workspace:*
         version: link:../../extensions/tool-cordis
-      '@deepseek-ai/dsh-tool-education-erp':
+      '@deepseek-ai/dsh-tool-erp':
         specifier: workspace:*
-        version: link:../../integration/tool-education-erp
+        version: link:../../integration/tool-erp
       '@deepseek-ai/dsh-tool-executor-ptc':
         specifier: workspace:*
         version: link:../../core/tool-executor-ptc
@@ -4617,7 +4617,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
 
-  packages/client/ui-education-web:
+  packages/client/ui-erp-web:
     dependencies:
       '@deepseek-ai/schemastery':
         specifier: link:../../../vendor/schemastery
@@ -12875,7 +12875,7 @@ importers:
         specifier: workspace:*
         version: link:../../util/home-paths
 
-  packages/integration/tool-education-erp:
+  packages/integration/tool-erp:
     dependencies:
       '@deepseek-ai/dsh-skill-filesystem':
         specifier: workspace:*

@@ -31,7 +31,7 @@
 | `@deepseek-ai/dsh-tool-present` | `present` | `ctx.workingDirectory`、`ctx.tools`, `ctx.fs`, `ctx.agents` | `tool/call`, `deliverables/presented 在成功的最终结果之后`, `tool/result` | - | 交付归调用方 Session 所有；Web ui-deliverables 提供源文件打开与卡片。 |
 | `@deepseek-ai/dsh-tool-pwsh` | `pwsh` | `ctx.workingDirectory`、`ctx.tools`、`ctx.shell`、`ctx.systemPrompt`、`ctx.shellEnv`、`ctx.jobs for run_in_background and the job-backed foreground path` | `tool/call`、`tool/result` | - | pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费方（由 `@deepseek-ai/dsh-pwsh-local` 等 PowerShell 执行器为 `ctx.shell` 提供后端）；除沙箱接口外，它逐项对应 bash 工具调用。使用 `run_in_background` 的运行会注册到通用 `ctx.jobs` 运行时，并通过 `job_*` 工具收集／停止；托管的 `DSH_*` 环境来自 `@deepseek-ai/dsh-shell-env`。每次调用都在新进程中运行，不使用持久 PTY 会话。路径采用原生 `C:\...` 形式，变量采用 `$env:NAME`。 |
 | `@deepseek-ai/dsh-tool-cordis` | `cordis_inspect_list`, `cordis_inspect_query` | `ctx.tools`, `ctx.cordisInspect` | `tool/call`, `tool/result` | - | 创造模式提供两个只读运行时检查工具。Cordis host runner 提供检查注册表；Client 查询需要已连接页面。持久化变更编写为组合包，再通过 plugin_manager 安装。 |
-| `@deepseek-ai/dsh-tool-education-erp` | `education_erp_api`、`education_erp_discover`、`education_erp_query`、`erp_knowledge_bind_file`、`erp_knowledge_check_file`、`erp_knowledge_create_document`、`erp_knowledge_list_bases`、`erp_knowledge_read_document`、`erp_knowledge_search`、`erp_knowledge_submit_files`、`erp_knowledge_submit_version`、`erp_knowledge_update_document`、`erp_knowledge_version_status`、`erp_position_memory_read`、`erp_position_memory_update` | `ctx.tools`、`ctx.connection`、`ctx.skills`、嵌入页面中的 ERP 登录状态 | `tool/call`、`tool/result`、`education_erp_api` 修改请求影响的 ERP 状态 | - | ERP 后端使用嵌入页面当前登录用户的访问令牌授权每次 API 或查询调用；不使用共享 ERP 账号或查询密钥。 |
+| `@deepseek-ai/dsh-tool-erp` | `erp_api`、`erp_discover`、`erp_knowledge_bind_file`、`erp_knowledge_check_file`、`erp_knowledge_create_document`、`erp_knowledge_list_bases`、`erp_knowledge_read_document`、`erp_knowledge_search`、`erp_knowledge_submit_files`、`erp_knowledge_submit_version`、`erp_knowledge_update_document`、`erp_knowledge_version_status`、`erp_position_memory_read`、`erp_position_memory_update`、`erp_query` | `ctx.tools`、`ctx.connection`、`ctx.skills`、嵌入页面中的 ERP 登录状态 | `tool/call`、`tool/result`、`erp_api` 修改请求影响的 ERP 状态 | - | ERP 后端使用嵌入页面当前登录用户的访问令牌授权每次 API 或查询调用；不使用共享 ERP 账号或查询密钥。 |
 | `@deepseek-ai/dsh-tool-bash-persistent` | `bash` | `ctx.workingDirectory`、`ctx.tools`、`ctx.terminals`、`an owning Agent at execution time` | `tool/call`、`PTY shell state`、`tool/result` | - | 一个按所有者隔离的持久 bash 工具；部署组合提供 PTY 后端，并可覆盖面向模型的环境描述。 |
 | `@deepseek-ai/dsh-tool-pwsh-persistent` | `pwsh` | `ctx.workingDirectory`、`ctx.tools`、`ctx.terminals`、`an owning Agent at execution time` | `tool/call`、`PTY shell state`、`tool/result` | - | 一个按所有者隔离的持久 pwsh 工具，持久 bash 工具的 Windows 对应物；部署组合提供 pwsh 方言的 PTY 后端，并可覆盖面向模型的环境描述。 |
 | `@deepseek-ai/dsh-tool-str-replace-editor` | `str_replace_editor` | `ctx.tools`、`ctx.fs` | `tool/call`、`fs/observed after view presence/absence, edit absence, or successful mutation`、`tool/result` | - | 基于文件系统 seam 的独立查看／创建／唯一字面量替换／按行插入工具；可与任何 shell 或终端接口组合。 |
@@ -884,13 +884,13 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 创造模式提供两个只读运行时检查工具。Cordis host runner 提供检查注册表；Client 查询需要已连接页面。持久化变更编写为组合包，再通过 plugin_manager 安装。
 
-<a id="deepseek-aidsh-tool-education-erp"></a>
+<a id="deepseek-aidsh-tool-erp"></a>
 
-## `@deepseek-ai/dsh-tool-education-erp`
+## `@deepseek-ai/dsh-tool-erp`
 
-### `education_erp_api`
+### `erp_api`
 
-Call an ERP business HTTP operation as the logged-in user. Discover operations with education_erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use education_erp_query for structured reads.
+Call an ERP business HTTP operation as the logged-in user. Discover operations with erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use erp_query for structured reads.
 
 ```json
 {
@@ -926,11 +926,11 @@ Call an ERP business HTTP operation as the logged-in user. Discover operations w
 }
 ```
 
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
 
-### `education_erp_discover`
+### `erp_discover`
 
-Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in education_erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with education_erp_api.
+Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with erp_api.
 
 ```json
 {
@@ -984,7 +984,7 @@ Discover approved ERP data and operations for the current question. Use search w
       "description": "Returned catalog revision; required for describe, validate and metric. Search again if stale."
     },
     "query": {
-      "description": "Structured education_erp_query arguments for validate."
+      "description": "Structured erp_query arguments for validate."
     },
     "metric_id": {
       "type": "string",
@@ -1011,11 +1011,407 @@ Discover approved ERP data and operations for the current question. Use search w
 }
 ```
 
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
 
-### `education_erp_query`
+### `erp_knowledge_bind_file`
 
-Read approved ERP data as the logged-in user. First search and describe relevant resources with education_erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks.
+Associate one explicitly selected local Markdown, Word, PDF, Excel or PowerPoint file with an ERP knowledge document or a new-document destination. Ask the user whether this file is a source revision or a separate deliverable before binding. Associations persist on this Host and are scoped to the current Session. Do not reconstruct a whole source from redacted search excerpts. Use the exact IDs returned by ERP tools. Attachments can only be associated as new documents. Binding does not submit or publish the file.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Explicitly selected local file path."
+    },
+    "knowledge_base_id": {
+      "type": "string",
+      "description": "Verified ERP target knowledge base ID."
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Verified existing ERP document ID for a revision; omit for a new document."
+    },
+    "document_name": {
+      "type": "string",
+      "description": "Human-readable document title."
+    }
+  },
+  "required": [
+    "path",
+    "knowledge_base_id",
+    "document_name"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_check_file`
+
+Check one associated Markdown file for changes and show the human a diff with Submit for review, Save draft, and Defer choices. Repeated unchanged content is quiet. ERP checks current permissions and version hashes. This never approves or publishes knowledge. A new unknown creation result requires manual reconciliation, never automatic recreation.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "force_prompt": {
+      "type": "boolean",
+      "description": "Show the decision again when the user explicitly requests it for unchanged content."
+    }
+  },
+  "required": [
+    "path"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_create_document`
+
+Create a new online Markdown draft in a chosen ERP knowledge base after explicit user confirmation. Use erp_knowledge_list_bases to select a real knowledge_base_id; no existing document or edit_token is required. Requires knowledge contribution permission and access to the target library. Success returns document_id, version_id and status_code=draft. Then use erp_knowledge_version_status to obtain the exact hash for erp_knowledge_submit_version. Humans review in ERP and approval queues verified publication; creating a draft does not make it searchable or grant read access. Do not use the update tool for creation. A local Markdown file is not a knowledge-base write. If the result is unclear or no document_id is returned, do not claim success or automatically retry creation; ask the user to check ERP for a possible existing draft.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "knowledge_base_id": {
+      "type": "string",
+      "description": "ERP knowledge_base_id returned by erp_knowledge_list_bases and selected by the user."
+    },
+    "document_name": {
+      "type": "string",
+      "description": "Title of the new knowledge document, 1 to 256 characters."
+    },
+    "content": {
+      "type": "string",
+      "description": "Complete Markdown body for the new draft, 1 to 200000 characters."
+    },
+    "change_reason": {
+      "type": "string",
+      "description": "Optional purpose or reason for this new document."
+    }
+  },
+  "required": [
+    "knowledge_base_id",
+    "document_name",
+    "content"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_list_bases`
+
+List or search the registered knowledge bases that the current ERP user may manage before creating a document. This is a read operation and does not require searching published documents first. Use the returned knowledge_base_id, never guess it. If several bases match and the destination is unclear, ask the user to choose. An empty list means no matching base is visible to this account, not that the module is absent. Respect has_more and next_offset. Do not probe guessed health or administrative paths when a request fails; use the returned error code to distinguish tenant enablement, missing routes and permissions.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Optional knowledge base name or keywords, up to 256 characters."
+    },
+    "offset": {
+      "type": "integer",
+      "description": "Pagination offset; use next_offset when has_more is true."
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Bases per page, 1 to 50; default 20."
+    }
+  }
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_read_document`
+
+Read a page of an authorized internal document using document_id returned by erp_knowledge_search. Access is checked again on every read. Cite document_name and chunk_index, and respect truncated markers. Use returned citation_url values unchanged for numbered Markdown source links beside supported claims; never invent source links. Use page and total_chunks to request more context when needed. If access has been revoked or the source changed, do not answer from an older excerpt as if it were current.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "document_id returned by erp_knowledge_search."
+    },
+    "page": {
+      "type": "integer",
+      "description": "Page number starting at 1; default 1."
+    },
+    "page_size": {
+      "type": "integer",
+      "description": "Chunks per page, 1 to 20; default 10."
+    }
+  },
+  "required": [
+    "document_id"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_search`
+
+Search internal company knowledge, policies and manuals allowed for the current ERP user. Use this tool for questions requiring internal documents. Results include document_id, document_name, chunk_index, content, source_hash_snapshot and rerank diagnostics. Cite the document name and chunk index when answering. For each supported claim append a numbered Markdown link using the returned citation_url unchanged, for example `[1](citation_url)`. Reuse its number for the same source; never invent a citation URL. Include the document name in the link title. Read longer context with erp_knowledge_read_document. If the authorized scope is empty or evidence is insufficient, say so; do not invent a policy. To add a new document, use erp_knowledge_list_bases and erp_knowledge_create_document; finding a published document first is unnecessary.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Question or keywords to find in authorized internal documents."
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum search hits, 1 to 12; default 5."
+    },
+    "document_ids": {
+      "type": "array",
+      "description": "Optional document_id values returned by knowledge search to narrow its scope.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "knowledge_base_ids": {
+      "type": "array",
+      "description": "Optional ERP knowledge base IDs to restrict retrieval. Knowledge-base references in the current user message restrict searches to their IDs. This filter intersects document_ids and current read permissions; an empty list searches nothing.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "query"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_submit_files`
+
+Submit 1 to 10 explicitly selected Markdown, Word, PDF, Excel or PowerPoint files in one human confirmation. Attachments are submitted as new documents, up to 20 MiB each. Resolve the target ERP library first and bind each unassociated file to that same library using erp_knowledge_bind_file. For a revision reuse the exact existing document ID. This replaces individual checks for the requested batch. Each file has a separate ERP review and result. Do not retry confirmed submissions or unknown writes. To retry a known unsent draft, first verify its ERP status, then explicitly check the failed file with force_prompt or batch only the remaining files.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "paths": {
+      "type": "array",
+      "description": "One to ten explicitly selected, associated local file paths.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "knowledge_base_id": {
+      "type": "string",
+      "description": "Verified common ERP knowledge base ID."
+    }
+  },
+  "required": [
+    "paths",
+    "knowledge_base_id"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_submit_version`
+
+Submit one ERP draft for human review and freeze that exact version. Requires knowledge contribution permission and explicit user confirmation. Obtain version_id and content_hash_snapshot from erp_knowledge_version_status; never guess them. This does not approve, publish, change WeKnora, or replace the published version. A human reviewer completes approval in ERP; successful engine publication then activates the version. A configured workflow may require the user to select reviewers in ERP before submission.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "version_id": {
+      "type": "string",
+      "description": "Exact draft version UUID returned by ERP version status."
+    },
+    "content_hash_snapshot": {
+      "type": "string",
+      "description": "Exact draft content hash returned by ERP version status."
+    }
+  },
+  "required": [
+    "version_id",
+    "content_hash_snapshot"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_update_document`
+
+Save a draft edit of an online Markdown document after explicit user confirmation. First query erp_knowledge_version_status and pass its root edit_token as source_hash_snapshot; a null token means editing is unavailable. For local changes, use replacements with exact before/after text: ERP reads the complete original and preserves all other content. Each before must match exactly once; missing, repeated or overlapping fragments reject the whole edit. Up to 20 replacements are allowed. Omit document_name to keep the title. Use content only for a complete replacement supplied by the user; never rebuild the document from truncated or redacted excerpts. Do not send content and replacements together. Uploaded files, including .md, and external sources are read-only. Frozen review or approved versions cannot be edited. Requires knowledge contribution permission and access to the target library. Saving does not change the published version or make the draft searchable. After saving, query version status and use erp_knowledge_submit_version for review; human approval in ERP queues publication and engine verification.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "ERP document_id returned by knowledge search or read."
+    },
+    "source_hash_snapshot": {
+      "type": "string",
+      "description": "Root edit_token returned by version status; before any draft exists, the current published source_hash_snapshot is also valid. Never guess a token or edit when the token is null."
+    },
+    "document_name": {
+      "type": "string",
+      "description": "Optional new document title, 1 to 256 characters; omit to keep the current title."
+    },
+    "content": {
+      "type": "string",
+      "description": "Complete replacement Markdown supplied by the user, 1 to 200000 characters. Mutually exclusive with replacements."
+    },
+    "replacements": {
+      "type": "array",
+      "description": "Up to 20 exact non-overlapping replacements against the same original document; omit content when using these.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "before": {
+            "type": "string",
+            "description": "Exact original text, including indentation and newlines; must occur exactly once."
+          },
+          "after": {
+            "type": "string",
+            "description": "Replacement Markdown; an empty string deletes the matched fragment."
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ]
+      }
+    },
+    "change_reason": {
+      "type": "string",
+      "description": "Optional reason for this draft change, shown to the human reviewer."
+    }
+  },
+  "required": [
+    "document_id",
+    "source_hash_snapshot"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_knowledge_version_status`
+
+Read ERP document version numbers, draft concurrency tokens, review states and publication progress. Requires knowledge contribution permission and access to the target library. This tool returns metadata only, without draft bodies or reviewer comments. Use the root edit_token as source_hash_snapshot when saving an edit, including a revision after rejection; a null token means editing is unavailable. Use the exact version_id and content_hash_snapshot when submitting review. Published content remains in use until a human-reviewed version is successfully published.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "ERP logical document UUID, not a WeKnora document identifier."
+    }
+  },
+  "required": [
+    "document_id"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_position_memory_read`
+
+Read the current published 岗位工作.md for one of your current ERP positions before doing related work or remembering shared experience. Use position_id from the current ERP position context. An absent 岗位工作.md has document_id=null; this says nothing about other drafts in the library. If can_update=true and this turn retrieved verified formal duties or a shared agreement, initialize the document with erp_position_memory_update. can_update=false means do not write. Only published text is shared; a queued revision is not yet effective.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "position_id": {
+      "type": "string",
+      "description": "Current ERP position_id; never infer from a role name."
+    }
+  },
+  "required": [
+    "position_id"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_position_memory_update`
+
+Automatically consolidate verified reusable methods, workflows and agreements into the current position’s shared 岗位工作.md. No per-write user confirmation or human review is required for this dedicated tool. Read first, deduplicate and preserve other members’ content. For a missing document supply content; for an existing document supply source_hash_snapshot and exact before/after replacements only. Never store personal preferences, temporary task progress, private/person/student/financial details, credentials or unverified inferences. When document_id=null and can_update=true, initialize from verified formal duties or shared agreements retrieved in this turn; completed practical work or a new experience is not a prerequisite. Include a concise duty summary, source document names and document_id values, and an experience section marked pending when empty. Preserve formal sources as authoritative rather than copying whole policies. For an existing document with no new content, or without reliable sources, skip silently; do not issue a no-write report. ERP rechecks membership and versions and queues publication. Creation, submission, normal queueing/indexing, successful publication and no-op maintenance are silent: do not append a memory-maintenance report to the business answer. After successful submission let the background publisher finish; do not poll merely to report progress or ask the user to wait or follow up. Only report a real failure requiring user action, briefly describing the impact and next step. If the user asks for status, distinguish queued from published truthfully. On conflict reread; on uncertain writes do not blindly retry. Other ERP tools still require confirmation.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "position_id": {
+      "type": "string",
+      "description": "Current position_id returned in ERP context."
+    },
+    "source_hash_snapshot": {
+      "type": "string",
+      "description": "Exact current token returned by erp_position_memory_read; omit for first creation."
+    },
+    "content": {
+      "type": "string",
+      "description": "Initial shared Markdown only when document_id is null."
+    },
+    "replacements": {
+      "type": "array",
+      "description": "Up to 20 exact fragment changes for an existing document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "before": {
+            "type": "string",
+            "description": "Exact unique existing passage, including whitespace."
+          },
+          "after": {
+            "type": "string",
+            "description": "Merged replacement preserving other shared knowledge."
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ]
+      }
+    }
+  },
+  "required": [
+    "position_id"
+  ]
+}
+```
+
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
+
+### `erp_query`
+
+Read approved ERP data as the logged-in user. First search and describe relevant resources with erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks.
 
 ```json
 {
@@ -1149,405 +1545,9 @@ Read approved ERP data as the logged-in user. First search and describe relevant
 }
 ```
 
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
+Source: [`packages/integration/tool-erp/src/index.ts`](../packages/integration/tool-erp/src/index.ts)
 
-### `erp_knowledge_bind_file`
-
-Associate one explicitly selected local Markdown, Word, PDF, Excel or PowerPoint file with an ERP knowledge document or a new-document destination. Ask the user whether this file is a source revision or a separate deliverable before binding. Associations persist on this Host and are scoped to the current Session. Do not reconstruct a whole source from redacted search excerpts. Use the exact IDs returned by ERP tools. Attachments can only be associated as new documents. Binding does not submit or publish the file.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "path": {
-      "type": "string",
-      "description": "Explicitly selected local file path."
-    },
-    "knowledge_base_id": {
-      "type": "string",
-      "description": "Verified ERP target knowledge base ID."
-    },
-    "document_id": {
-      "type": "string",
-      "description": "Verified existing ERP document ID for a revision; omit for a new document."
-    },
-    "document_name": {
-      "type": "string",
-      "description": "Human-readable document title."
-    }
-  },
-  "required": [
-    "path",
-    "knowledge_base_id",
-    "document_name"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_check_file`
-
-Check one associated Markdown file for changes and show the human a diff with Submit for review, Save draft, and Defer choices. Repeated unchanged content is quiet. ERP checks current permissions and version hashes. This never approves or publishes knowledge. A new unknown creation result requires manual reconciliation, never automatic recreation.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "path": {
-      "type": "string"
-    },
-    "force_prompt": {
-      "type": "boolean",
-      "description": "Show the decision again when the user explicitly requests it for unchanged content."
-    }
-  },
-  "required": [
-    "path"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_create_document`
-
-Create a new online Markdown draft in a chosen ERP knowledge base after explicit user confirmation. Use erp_knowledge_list_bases to select a real knowledge_base_id; no existing document or edit_token is required. Requires knowledge contribution permission and access to the target library. Success returns document_id, version_id and status_code=draft. Then use erp_knowledge_version_status to obtain the exact hash for erp_knowledge_submit_version. Humans review in ERP and approval queues verified publication; creating a draft does not make it searchable or grant read access. Do not use the update tool for creation. A local Markdown file is not a knowledge-base write. If the result is unclear or no document_id is returned, do not claim success or automatically retry creation; ask the user to check ERP for a possible existing draft.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "knowledge_base_id": {
-      "type": "string",
-      "description": "ERP knowledge_base_id returned by erp_knowledge_list_bases and selected by the user."
-    },
-    "document_name": {
-      "type": "string",
-      "description": "Title of the new knowledge document, 1 to 256 characters."
-    },
-    "content": {
-      "type": "string",
-      "description": "Complete Markdown body for the new draft, 1 to 200000 characters."
-    },
-    "change_reason": {
-      "type": "string",
-      "description": "Optional purpose or reason for this new document."
-    }
-  },
-  "required": [
-    "knowledge_base_id",
-    "document_name",
-    "content"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_list_bases`
-
-List or search the registered knowledge bases that the current ERP user may manage before creating a document. This is a read operation and does not require searching published documents first. Use the returned knowledge_base_id, never guess it. If several bases match and the destination is unclear, ask the user to choose. An empty list means no matching base is visible to this account, not that the module is absent. Respect has_more and next_offset. Do not probe guessed health or administrative paths when a request fails; use the returned error code to distinguish tenant enablement, missing routes and permissions.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "query": {
-      "type": "string",
-      "description": "Optional knowledge base name or keywords, up to 256 characters."
-    },
-    "offset": {
-      "type": "integer",
-      "description": "Pagination offset; use next_offset when has_more is true."
-    },
-    "limit": {
-      "type": "integer",
-      "description": "Bases per page, 1 to 50; default 20."
-    }
-  }
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_read_document`
-
-Read a page of an authorized internal document using document_id returned by erp_knowledge_search. Access is checked again on every read. Cite document_name and chunk_index, and respect truncated markers. Use returned citation_url values unchanged for numbered Markdown source links beside supported claims; never invent source links. Use page and total_chunks to request more context when needed. If access has been revoked or the source changed, do not answer from an older excerpt as if it were current.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "document_id": {
-      "type": "string",
-      "description": "document_id returned by erp_knowledge_search."
-    },
-    "page": {
-      "type": "integer",
-      "description": "Page number starting at 1; default 1."
-    },
-    "page_size": {
-      "type": "integer",
-      "description": "Chunks per page, 1 to 20; default 10."
-    }
-  },
-  "required": [
-    "document_id"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_search`
-
-Search internal company knowledge, policies and manuals allowed for the current ERP user. Use this tool for questions requiring internal documents. Results include document_id, document_name, chunk_index, content, source_hash_snapshot and rerank diagnostics. Cite the document name and chunk index when answering. For each supported claim append a numbered Markdown link using the returned citation_url unchanged, for example `[1](citation_url)`. Reuse its number for the same source; never invent a citation URL. Include the document name in the link title. Read longer context with erp_knowledge_read_document. If the authorized scope is empty or evidence is insufficient, say so; do not invent a policy. To add a new document, use erp_knowledge_list_bases and erp_knowledge_create_document; finding a published document first is unnecessary.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "query": {
-      "type": "string",
-      "description": "Question or keywords to find in authorized internal documents."
-    },
-    "limit": {
-      "type": "integer",
-      "description": "Maximum search hits, 1 to 12; default 5."
-    },
-    "document_ids": {
-      "type": "array",
-      "description": "Optional document_id values returned by knowledge search to narrow its scope.",
-      "items": {
-        "type": "string"
-      }
-    },
-    "knowledge_base_ids": {
-      "type": "array",
-      "description": "Optional ERP knowledge base IDs to restrict retrieval. Knowledge-base references in the current user message restrict searches to their IDs. This filter intersects document_ids and current read permissions; an empty list searches nothing.",
-      "items": {
-        "type": "string"
-      }
-    }
-  },
-  "required": [
-    "query"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_submit_files`
-
-Submit 1 to 10 explicitly selected Markdown, Word, PDF, Excel or PowerPoint files in one human confirmation. Attachments are submitted as new documents, up to 20 MiB each. Resolve the target ERP library first and bind each unassociated file to that same library using erp_knowledge_bind_file. For a revision reuse the exact existing document ID. This replaces individual checks for the requested batch. Each file has a separate ERP review and result. Do not retry confirmed submissions or unknown writes. To retry a known unsent draft, first verify its ERP status, then explicitly check the failed file with force_prompt or batch only the remaining files.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "paths": {
-      "type": "array",
-      "description": "One to ten explicitly selected, associated local file paths.",
-      "items": {
-        "type": "string"
-      }
-    },
-    "knowledge_base_id": {
-      "type": "string",
-      "description": "Verified common ERP knowledge base ID."
-    }
-  },
-  "required": [
-    "paths",
-    "knowledge_base_id"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_submit_version`
-
-Submit one ERP draft for human review and freeze that exact version. Requires knowledge contribution permission and explicit user confirmation. Obtain version_id and content_hash_snapshot from erp_knowledge_version_status; never guess them. This does not approve, publish, change WeKnora, or replace the published version. A human reviewer completes approval in ERP; successful engine publication then activates the version. A configured workflow may require the user to select reviewers in ERP before submission.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "version_id": {
-      "type": "string",
-      "description": "Exact draft version UUID returned by ERP version status."
-    },
-    "content_hash_snapshot": {
-      "type": "string",
-      "description": "Exact draft content hash returned by ERP version status."
-    }
-  },
-  "required": [
-    "version_id",
-    "content_hash_snapshot"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_update_document`
-
-Save a draft edit of an online Markdown document after explicit user confirmation. First query erp_knowledge_version_status and pass its root edit_token as source_hash_snapshot; a null token means editing is unavailable. For local changes, use replacements with exact before/after text: ERP reads the complete original and preserves all other content. Each before must match exactly once; missing, repeated or overlapping fragments reject the whole edit. Up to 20 replacements are allowed. Omit document_name to keep the title. Use content only for a complete replacement supplied by the user; never rebuild the document from truncated or redacted excerpts. Do not send content and replacements together. Uploaded files, including .md, and external sources are read-only. Frozen review or approved versions cannot be edited. Requires knowledge contribution permission and access to the target library. Saving does not change the published version or make the draft searchable. After saving, query version status and use erp_knowledge_submit_version for review; human approval in ERP queues publication and engine verification.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "document_id": {
-      "type": "string",
-      "description": "ERP document_id returned by knowledge search or read."
-    },
-    "source_hash_snapshot": {
-      "type": "string",
-      "description": "Root edit_token returned by version status; before any draft exists, the current published source_hash_snapshot is also valid. Never guess a token or edit when the token is null."
-    },
-    "document_name": {
-      "type": "string",
-      "description": "Optional new document title, 1 to 256 characters; omit to keep the current title."
-    },
-    "content": {
-      "type": "string",
-      "description": "Complete replacement Markdown supplied by the user, 1 to 200000 characters. Mutually exclusive with replacements."
-    },
-    "replacements": {
-      "type": "array",
-      "description": "Up to 20 exact non-overlapping replacements against the same original document; omit content when using these.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "before": {
-            "type": "string",
-            "description": "Exact original text, including indentation and newlines; must occur exactly once."
-          },
-          "after": {
-            "type": "string",
-            "description": "Replacement Markdown; an empty string deletes the matched fragment."
-          }
-        },
-        "required": [
-          "before",
-          "after"
-        ]
-      }
-    },
-    "change_reason": {
-      "type": "string",
-      "description": "Optional reason for this draft change, shown to the human reviewer."
-    }
-  },
-  "required": [
-    "document_id",
-    "source_hash_snapshot"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_knowledge_version_status`
-
-Read ERP document version numbers, draft concurrency tokens, review states and publication progress. Requires knowledge contribution permission and access to the target library. This tool returns metadata only, without draft bodies or reviewer comments. Use the root edit_token as source_hash_snapshot when saving an edit, including a revision after rejection; a null token means editing is unavailable. Use the exact version_id and content_hash_snapshot when submitting review. Published content remains in use until a human-reviewed version is successfully published.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "document_id": {
-      "type": "string",
-      "description": "ERP logical document UUID, not a WeKnora document identifier."
-    }
-  },
-  "required": [
-    "document_id"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_position_memory_read`
-
-Read the current published 岗位工作.md for one of your current ERP positions before doing related work or remembering shared experience. Use position_id from the current ERP position context. An absent 岗位工作.md has document_id=null; this says nothing about other drafts in the library. If can_update=true and this turn retrieved verified formal duties or a shared agreement, initialize the document with erp_position_memory_update. can_update=false means do not write. Only published text is shared; a queued revision is not yet effective.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "position_id": {
-      "type": "string",
-      "description": "Current ERP position_id; never infer from a role name."
-    }
-  },
-  "required": [
-    "position_id"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-### `erp_position_memory_update`
-
-Automatically consolidate verified reusable methods, workflows and agreements into the current position’s shared 岗位工作.md. No per-write user confirmation or human review is required for this dedicated tool. Read first, deduplicate and preserve other members’ content. For a missing document supply content; for an existing document supply source_hash_snapshot and exact before/after replacements only. Never store personal preferences, temporary task progress, private/person/student/financial details, credentials or unverified inferences. When document_id=null and can_update=true, initialize from verified formal duties or shared agreements retrieved in this turn; completed practical work or a new experience is not a prerequisite. Include a concise duty summary, source document names and document_id values, and an experience section marked pending when empty. Preserve formal sources as authoritative rather than copying whole policies. For an existing document with no new content, or without reliable sources, skip silently; do not issue a no-write report. ERP rechecks membership and versions and queues publication. Creation, submission, normal queueing/indexing, successful publication and no-op maintenance are silent: do not append a memory-maintenance report to the business answer. After successful submission let the background publisher finish; do not poll merely to report progress or ask the user to wait or follow up. Only report a real failure requiring user action, briefly describing the impact and next step. If the user asks for status, distinguish queued from published truthfully. On conflict reread; on uncertain writes do not blindly retry. Other ERP tools still require confirmation.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "position_id": {
-      "type": "string",
-      "description": "Current position_id returned in ERP context."
-    },
-    "source_hash_snapshot": {
-      "type": "string",
-      "description": "Exact current token returned by erp_position_memory_read; omit for first creation."
-    },
-    "content": {
-      "type": "string",
-      "description": "Initial shared Markdown only when document_id is null."
-    },
-    "replacements": {
-      "type": "array",
-      "description": "Up to 20 exact fragment changes for an existing document.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "before": {
-            "type": "string",
-            "description": "Exact unique existing passage, including whitespace."
-          },
-          "after": {
-            "type": "string",
-            "description": "Merged replacement preserving other shared knowledge."
-          }
-        },
-        "required": [
-          "before",
-          "after"
-        ]
-      }
-    }
-  },
-  "required": [
-    "position_id"
-  ]
-}
-```
-
-Source: [`packages/integration/tool-education-erp/src/index.ts`](../packages/integration/tool-education-erp/src/index.ts)
-
-The ERP backend authorizes each API or query call with the access token from the user logged in to the embedded page. No shared ERP account or query key is used.
+ERP 后端使用嵌入页面中当前用户的访问令牌逐次授权 API 和查询调用。
 
 <a id="deepseek-aidsh-tool-bash-persistent"></a>
 

@@ -68,8 +68,8 @@ interface ToolArgsMap {
     /** Required with sandbox_permissions: one sentence for the user explaining why this exact file operation needs the wider access. Use the language of the user’s current request. */
     justification?: string;
   } & Record<string, JsonValue>;
-  /** Open an authorized ERP page. Read GET /api/auth/menus with education_erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only. */
-  education_erp_open_page: {
+  /** Open an authorized ERP page. Read GET /api/auth/menus with erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only. */
+  erp_open_page: {
     /** Stable menu_key returned by ERP menus; preferred over path. */
     menu_key?: string;
     /** ERP route from the current authorized menu; provide either menu_key or path. */
@@ -289,7 +289,7 @@ interface ToolOutputMap {
     before: string;
     after: string;
   };
-  education_erp_open_page: JsonValue;
+  erp_open_page: JsonValue;
   exit_plan_mode: {
     approved: true;
   };

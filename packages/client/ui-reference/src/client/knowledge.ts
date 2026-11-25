@@ -9,7 +9,7 @@ import { IconDatabaseOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitive
 import { NS } from './locales.ts'
 
 interface BaseOption {
-  knowledge_base_id: Branded<'EducationKnowledgeBaseId'>
+  knowledge_base_id: Branded<'ErpKnowledgeBaseId'>
   knowledge_base_name: string
 }
 

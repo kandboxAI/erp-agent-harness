@@ -1,5 +1,5 @@
 /** Server-only ERP tools and model gateway; credentials remain outside session logs. */
-import { registerDesktopEducationErp } from '@deepseek-ai/dsh-tool-education-erp'
+import { registerDesktopErp } from '@deepseek-ai/dsh-tool-erp'
 import { registerDeepSeekProvider, resolveAdapterOptions, catalogModelInfo } from '@deepseek-ai/dsh-llm-deepseek'
 import z from '@deepseek-ai/schemastery'
 
@@ -26,8 +26,8 @@ export function apply(ctx, config) {
   const gatewayUrl = new URL(config.gatewayUrl)
   if (gatewayUrl.origin !== origin) throw new Error('模型网关必须使用同一个 ERP 服务')
   ctx.on('approval/request', async (request, next) => {
-    if (request.toolName !== 'education_erp_api') return next()
-    const preview = request.displayReason?.['zh-CN']
+    if (request.toolName !== 'erp_api') return next()
+    const preview = request.displayReason?.zh ?? request.displayReason?.['zh-CN']
     if (typeof preview !== 'string' || !preview || preview.length > 8192) return 'unavailable'
     try {
       const response = await fetch(new URL('/api/ai/internal/write-approval', config.baseUrl), {
@@ -44,7 +44,7 @@ export function apply(ctx, config) {
       return 'unavailable'
     }
   })
-  registerDesktopEducationErp(ctx, {
+  registerDesktopErp(ctx, {
     ...config, writeApprovalTimeoutMs: Number(process.env.ERP_SERVER_APPROVAL_TIMEOUT_MS || 90000),
     // This server profile does not mount filesystem skill providers.
     skillSources: [], skillCatalogRefreshMs: 15_000,
@@ -56,7 +56,7 @@ export function apply(ctx, config) {
       if (typeof init.body === 'string') {
         const args = JSON.parse(init.body)
         if (args.operation === 'catalog' || args.path === '/api/harness/catalog') {
-          throw new Error('请按问题使用 education_erp_discover search 和 describe，不加载全量目录')
+          throw new Error('请按问题使用 erp_discover search 和 describe，不加载全量目录')
         }
       }
       const headers = new Headers(init.headers)

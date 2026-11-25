@@ -1,4 +1,4 @@
 - name: 'cordis:discovery-system-prompt'
 - name: 'cordis:discovery-tools'
 - name: 'cordis:skills'
-- name: 'cordis:education-erp-data'
+- name: 'cordis:erp-data'

@@ -36,7 +36,7 @@ pnpm dev:desktop:erp
 <a id="run-in-a-browser"></a>
 ## 在浏览器运行
 
-使用上面的命令克隆、安装依赖并构建，然后在 Harness 根目录运行 `pnpm dsh web` 启动独立对话界面。开发 ERP 工具时，`pnpm web:erp` 会在标准 Web 界面加载 ERP 工具。Web 启动入口默认连接 `http://127.0.0.1:8000/`。如果 FastAPI 使用其他后端地址，设置 `EDUCATION_ERP_API_URL`。调用工具需要为当前会话绑定已认证的 ERP 登录身份。需要直接在客户端登录 ERP 时，使用上面的组合桌面。[ERP 集成参考](integrations/erp/README.zh.md)
+使用上面的命令克隆、安装依赖并构建，然后在 Harness 根目录运行 `pnpm dsh web` 启动独立对话界面。开发 ERP 工具时，`pnpm web:erp` 会在标准 Web 界面加载 ERP 工具。Web 启动入口默认连接 `http://127.0.0.1:8000/`。如果 FastAPI 使用其他后端地址，设置 `ERP_API_URL`。调用工具需要为当前会话绑定已认证的 ERP 登录身份。需要直接在客户端登录 ERP 时，使用上面的组合桌面。[ERP 集成参考](integrations/erp/README.zh.md)
 
 ## 开发
 

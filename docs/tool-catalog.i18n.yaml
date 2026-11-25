@@ -9,8 +9,8 @@
   en: 6cc2cd9ced70bb09
   zh: 1c0e6cb4ba2ed637
 /tool-schema-catalog/tool-package-map:
-  en: 27b3d2749f50aeb7
-  zh: cecdca42964626dd
+  en: e184fa37d849217d
+  zh: a35d9abb20fc8af5
 /tool-schema-catalog/deepseek-ai-dsh-plugin-manager:
   en: e0143916bb634762
   zh: e0143916bb634762
@@ -105,56 +105,56 @@
   en: 594e5b42047969cc
   zh: 72189ca21345c210
 /tool-schema-catalog/deepseek-ai-dsh-tool-cordis/cordis-inspect-query:
-  en: bf4e583d03d00901
-  zh: 2ca8afe8d8c55e19
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp:
-  en: f8a98167665e1e14
-  zh: f8a98167665e1e14
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/education-erp-api:
-  en: fa6e4899a27eff42
-  zh: fa6e4899a27eff42
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/education-erp-discover:
-  en: 71697e9ce4e8f8c9
-  zh: 71697e9ce4e8f8c9
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/education-erp-query:
-  en: 18ee70a3d70503e5
-  zh: 18ee70a3d70503e5
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-bind-file:
-  en: f1786db7be81d80b
-  zh: f1786db7be81d80b
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-check-file:
-  en: 0354ae6df6445f0b
-  zh: 0354ae6df6445f0b
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-create-document:
-  en: 2b4fc8e0506cd39e
-  zh: 2b4fc8e0506cd39e
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-list-bases:
-  en: 1a735c578d11f170
-  zh: 1a735c578d11f170
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-read-document:
-  en: fcc072c7304b65e4
-  zh: fcc072c7304b65e4
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-search:
-  en: 73304ad4696f24f0
-  zh: 73304ad4696f24f0
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-submit-files:
-  en: 103f89cc4688bdf2
-  zh: 103f89cc4688bdf2
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-submit-version:
-  en: 22e7623c6f4b9298
-  zh: 22e7623c6f4b9298
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-update-document:
-  en: 5ecdf74a3671f1e4
-  zh: 5ecdf74a3671f1e4
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-knowledge-version-status:
-  en: 25d3ba30e980f0d9
-  zh: 25d3ba30e980f0d9
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-position-memory-read:
-  en: 554c56902cb24cf8
-  zh: 554c56902cb24cf8
-/tool-schema-catalog/deepseek-ai-dsh-tool-education-erp/erp-position-memory-update:
-  en: b99d75fdf7e4ad6c
-  zh: b99d75fdf7e4ad6c
+  en: 2cf839068e46fb1e
+  zh: 28049a9de92d64a4
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp:
+  en: 3644a732dd0a9841
+  zh: 3644a732dd0a9841
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-api:
+  en: 6277e34832ea25df
+  zh: 6277e34832ea25df
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-discover:
+  en: 0c755db96d970d8d
+  zh: 0c755db96d970d8d
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-bind-file:
+  en: a95e21ab90829243
+  zh: a95e21ab90829243
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-check-file:
+  en: 4a56857713124e80
+  zh: 4a56857713124e80
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-create-document:
+  en: cd980a03bb8fb281
+  zh: cd980a03bb8fb281
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-list-bases:
+  en: af81292f7df3926a
+  zh: af81292f7df3926a
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-read-document:
+  en: bebec84ae045f713
+  zh: bebec84ae045f713
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-search:
+  en: 8d483956dd62b983
+  zh: 8d483956dd62b983
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-submit-files:
+  en: 47b14d3d1050206e
+  zh: 47b14d3d1050206e
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-submit-version:
+  en: 3c3a127f53689891
+  zh: 3c3a127f53689891
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-update-document:
+  en: 390c18e43a132fb0
+  zh: 390c18e43a132fb0
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-knowledge-version-status:
+  en: 94d21b3eb885e2be
+  zh: 94d21b3eb885e2be
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-position-memory-read:
+  en: 9ec8afd522b2005c
+  zh: 9ec8afd522b2005c
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-position-memory-update:
+  en: 669e4229605f2a82
+  zh: 669e4229605f2a82
+/tool-schema-catalog/deepseek-ai-dsh-tool-erp/erp-query:
+  en: 72c03edd30286738
+  zh: 0bf5ff1a323373f1
 /tool-schema-catalog/deepseek-ai-dsh-tool-bash-persistent:
   en: bdd9e88c49029e05
   zh: bdd9e88c49029e05

@@ -39,7 +39,7 @@ def test_only_erp_tools_and_persisted_resume(tmp_path):
             ]
             if len(requests) == 1:
                 events[1:5] = [
-                    {"type": "content_block_start", "index": 0, "content_block": {"type": "tool_use", "id": "discover-1", "name": "education_erp_discover", "input": {}}},
+                    {"type": "content_block_start", "index": 0, "content_block": {"type": "tool_use", "id": "discover-1", "name": "erp_discover", "input": {}}},
                     {"type": "content_block_delta", "index": 0, "delta": {"type": "input_json_delta", "partial_json": json.dumps({"action": "search", "question": "统计教师学历结构"}, ensure_ascii=False)}},
                     {"type": "content_block_stop", "index": 0},
                     {"type": "message_delta", "delta": {"stop_reason": "tool_use"}, "usage": {"output_tokens": 1}},
@@ -66,6 +66,18 @@ def test_only_erp_tools_and_persisted_resume(tmp_path):
                ERP_SERVER_GATEWAY_TOKEN='private-gateway-token', ERP_SERVER_CLIENT_ID=client_id,
                ERP_SERVER_APPROVAL_TOKEN='private-approval-token', ERP_SERVER_RUN_ID=str(uuid4()),
                ERP_SERVER_SESSION_ID=session_id, ERP_SERVER_APPROVAL_TIMEOUT_MS='90000')
+    scope_plugin = tmp_path / "erp-data-tool-scope.mjs"
+    scope_plugin.write_text(
+        "export const inject = ['agents', 'tools'];\n"
+        "export function apply(ctx) {\n"
+        "  ctx.on('agent/created', ({ agent }) => {\n"
+        "    agent.ctx.tools.restrict({ allow: ['erp_api', 'erp_discover', 'erp_query'] });\n"
+        "  });\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    scope_patch = tmp_path / "erp-data-tool-scope.json"
+    scope_patch.write_text(json.dumps([{"insert": [{"name": scope_plugin.as_uri()}]}]), encoding="utf-8")
     results = []
     try:
         for question in ('统计教师学历结构', '继续解释刚才的统计'):
@@ -78,7 +90,7 @@ def test_only_erp_tools_and_persisted_resume(tmp_path):
             with DeepSeekHarness(DeepSeekHarnessConfig(
                 dsh_bin=str(root/'apps/cli/src/bin.ts'),
                 runtime_cwd=str(root), cwd=str(tmp_path), dsh_home=str(tmp_path), profile='sdk-minimal',
-                patches=(str(root/'integrations/server-assistant/cordis.patch.yml'),),
+                patches=(str(root/'integrations/server-assistant/cordis.patch.yml'), str(scope_patch)),
                 provider='erp-gateway', model='deepseek-flash', env=env, inherit_env=False,
                 max_tokens=1024, initialize_timeout_seconds=45, request_timeout_seconds=30,
             )) as harness:
@@ -90,7 +102,7 @@ def test_only_erp_tools_and_persisted_resume(tmp_path):
         server.server_close()
     assert [r.final_response for r in results] == ['模拟统计完成', '模拟统计完成'], [(r.finish_reason, [e['type'] for e in r.events]) for r in results]
     assert all(r.finish_reason == 'completed' for r in results)
-    assert {t['name'] for t in requests[0]['tools']} == {'education_erp_discover', 'education_erp_api', 'education_erp_query'}
+    assert {t['name'] for t in requests[0]['tools']} == {'erp_discover', 'erp_api', 'erp_query'}
     assert '统计教师学历结构' in json.dumps(requests[-1], ensure_ascii=False)
     assert '模拟统计完成' in json.dumps(requests[-1], ensure_ascii=False)
     assert all(pair == ('private-gateway-token', client_id) for pair in auth_headers)
@@ -141,7 +153,7 @@ def test_write_waits_for_confirmed_action_and_uses_one_time_grant(tmp_path):
                 model_turns.append(payload)
                 events = [
                     {'type': 'message_start', 'message': {'id': 'mock', 'model': 'deepseek-flash', 'usage': {'input_tokens': 3, 'output_tokens': 0}}},
-                    {'type': 'content_block_start', 'index': 0, 'content_block': {'type': 'tool_use', 'id': 'write-1', 'name': 'education_erp_api', 'input': {}}},
+                    {'type': 'content_block_start', 'index': 0, 'content_block': {'type': 'tool_use', 'id': 'write-1', 'name': 'erp_api', 'input': {}}},
                     {'type': 'content_block_delta', 'index': 0, 'delta': {'type': 'input_json_delta', 'partial_json': json.dumps({'method': 'POST', 'path': '/api/workflow_task/complete/123', 'body': {'comment': '同意'}}, ensure_ascii=False)}},
                     {'type': 'content_block_stop', 'index': 0},
                     {'type': 'message_delta', 'delta': {'stop_reason': 'tool_use'}, 'usage': {'output_tokens': 1}},

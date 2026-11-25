@@ -590,28 +590,28 @@ export interface Config {
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-client-shortcuts -->
 
-<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-client-ui-education-web -->
-<a id="deepseek-aidsh-client-ui-education-web"></a>
+<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-client-ui-erp-web -->
+<a id="deepseek-aidsh-client-ui-erp-web"></a>
 
-## `@deepseek-ai/dsh-client-ui-education-web`
+## `@deepseek-ai/dsh-client-ui-erp-web`
 
 - `inject`: `webServer` · `tools`
-- `source`: [`packages/client/ui-education-web/src/config.ts:5`](../packages/client/ui-education-web/src/config.ts)
+- `source`: [`packages/client/ui-erp-web/src/config.ts:5`](../packages/client/ui-erp-web/src/config.ts)
 
 ```ts config-catalog
-/** Resolved education panel configuration shared with the browser plugin. */
+/** Resolved ERP panel configuration shared with the browser plugin. */
 export interface Config {
   /** Mount only shared personal settings, without the iframe panel or navigation. */
   settingsOnly?: boolean
   /** HTTP(S) address loaded in the embedded frame. */
   url: string
-  /** Whether a fresh Harness page selects the education panel after boot. */
+  /** Whether a fresh Harness page selects the ERP panel after boot. */
   openOnStartup: boolean
   /** Maximum time to wait for the embedded application to acknowledge navigation. */
   navigationTimeoutMs: number
 }
 ```
-<!-- END GENERATED config-catalog:@deepseek-ai/dsh-client-ui-education-web -->
+<!-- END GENERATED config-catalog:@deepseek-ai/dsh-client-ui-erp-web -->
 
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-client-ui-plugin-manager -->
 <a id="deepseek-aidsh-client-ui-plugin-manager"></a>
@@ -4111,18 +4111,18 @@ export interface Config {
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-bash-persistent -->
 
-<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-education-erp -->
-<a id="deepseek-aidsh-tool-education-erp"></a>
+<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-erp -->
+<a id="deepseek-aidsh-tool-erp"></a>
 
-## `@deepseek-ai/dsh-tool-education-erp`
+## `@deepseek-ai/dsh-tool-erp`
 
 - `inject`: `tools` · `connection` · `skills`
-- `source`: [`packages/integration/tool-education-erp/src/index.ts:16`](../packages/integration/tool-education-erp/src/index.ts)
+- `source`: [`packages/integration/tool-erp/src/index.ts:16`](../packages/integration/tool-erp/src/index.ts)
 
 ```ts config-catalog
 /** ERP endpoint and bounds shared by web and desktop tool registrations. */
 export interface Config {
-  /** HTTP(S) origin of the education ERP backend. */
+  /** HTTP(S) origin of the ERP backend. */
   baseUrl: string
   /** Maximum duration of one ERP HTTP request in milliseconds. */
   timeoutMs: number
@@ -4148,7 +4148,7 @@ export interface SkillSourceConfig {
   customSkillDirs: string[]
 }
 ```
-<!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-education-erp -->
+<!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-erp -->
 
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-executor-ptc -->
 <a id="deepseek-aidsh-tool-executor-ptc"></a>

@@ -3,5 +3,5 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write integrations/erp/README.md
 /erp-integration:
-  en: 5e9bdcad84ba3c44
-  zh: 9bedf36baad92777
+  en: eefc8da059ec54df
+  zh: 8166e38c26d07f71

@@ -31,6 +31,6 @@
     - id: enterprise-ai-feedback
       name: '@deepseek-ai/dsh-client-ui-ai-control'
     - id: erp-personal-settings
-      name: '@deepseek-ai/dsh-client-ui-education-web'
+      name: '@deepseek-ai/dsh-client-ui-erp-web'
       config:
         settingsOnly: true

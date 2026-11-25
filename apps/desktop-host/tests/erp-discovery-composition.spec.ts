@@ -25,13 +25,13 @@ it('executes a relational plan through the app Loader and renders bounded result
     ctx.loader.builtins['discovery-system-prompt'] = SystemPrompt
     ctx.loader.builtins['discovery-tools'] = ToolRuntime
     ctx.loader.builtins.skills = SkillRegistry
-    ctx.loader.builtins['education-erp-data'] = bridge.dataPlugin()
+    ctx.loader.builtins['erp-data'] = bridge.dataPlugin()
   })
   const tools = ctx.tools
   try {
-    const tool = tools.get('education_erp_query')
+    const tool = tools.get('erp_query')
     if (!tool) throw new Error('Query tool not registered')
-    const schema = JSON.stringify(tools.schemas().find(schema => schema.name === 'education_erp_query'))
+    const schema = JSON.stringify(tools.schemas().find(schema => schema.name === 'erp_query'))
     expect(schema).toContain('execution.max_joins')
     expect(schema).not.toContain('At most 3 joins')
     const args = { operation: 'plan', catalog_revision: 'sha256:current', plan: {
@@ -55,7 +55,7 @@ it('executes a relational plan through the app Loader and renders bounded result
     expect(JSON.stringify(result)).not.toContain('Bearer')
   } finally {
     await ctx.fiber.dispose()
-    expect(tools.get('education_erp_query')).toBeUndefined()
+    expect(tools.get('erp_query')).toBeUndefined()
   }
 })
 
@@ -74,11 +74,11 @@ it('keeps writes pending when the real Loader composition has no confirmation pr
     ctx.loader.builtins['discovery-system-prompt'] = SystemPrompt
     ctx.loader.builtins['discovery-tools'] = ToolRuntime
     ctx.loader.builtins.skills = SkillRegistry
-    ctx.loader.builtins['education-erp-data'] = bridge.dataPlugin()
+    ctx.loader.builtins['erp-data'] = bridge.dataPlugin()
   })
   const tools = ctx.tools
   try {
-    const tool = tools.get('education_erp_api')
+    const tool = tools.get('erp_api')
     if (tool === undefined) throw new Error('API tool not registered')
     await expect(tool.execute({ method: 'POST', path: '/api/business/change', body: { enabled: true } }, {
       signal: new AbortController().signal, agent: { session: { id: 'session-write' } },
@@ -86,7 +86,7 @@ it('keeps writes pending when the real Loader composition has no confirmation pr
     expect(requests.filter(path => path !== '/api/plugins/ai-capabilities')).toEqual(['/api/harness/api'])
   } finally {
     await ctx.fiber.dispose()
-    expect(tools.get('education_erp_api')).toBeUndefined()
+    expect(tools.get('erp_api')).toBeUndefined()
   }
 })
 
@@ -104,12 +104,12 @@ it('loads the ERP data plugin in the app Loader and renders discovered resources
     ctx.loader.builtins['discovery-system-prompt'] = SystemPrompt
     ctx.loader.builtins['discovery-tools'] = ToolRuntime
     ctx.loader.builtins.skills = SkillRegistry
-    ctx.loader.builtins['education-erp-data'] = bridge.dataPlugin()
+    ctx.loader.builtins['erp-data'] = bridge.dataPlugin()
   })
   const tools = ctx.tools
   try {
-    expect(ctx.tools.schemas().some(schema => schema.name === 'education_erp_discover')).toBe(true)
-    const tool = ctx.tools.get('education_erp_discover')
+    expect(ctx.tools.schemas().some(schema => schema.name === 'erp_discover')).toBe(true)
+    const tool = ctx.tools.get('erp_discover')
     if (!tool) throw new Error('Discovery tool not registered')
     const result = await tool.execute({ action: 'search', question: '教师学历结构' }, {
       signal: new AbortController().signal, agent: { session: { id: 'session-discovery' } },
@@ -118,7 +118,7 @@ it('loads the ERP data plugin in the app Loader and renders discovered resources
       candidates: [{ id: 'resource:education.instructor', label: '教师', summary: '教师类型、学历、职称' }] } })
   } finally {
     await ctx.fiber.dispose()
-    expect(tools.get('education_erp_discover')).toBeUndefined()
+    expect(tools.get('erp_discover')).toBeUndefined()
   }
 })
 
@@ -153,7 +153,7 @@ it('searches and reads governed knowledge through the real Loader and removes it
     ctx.loader.builtins['discovery-system-prompt'] = SystemPrompt
     ctx.loader.builtins['discovery-tools'] = ToolRuntime
     ctx.loader.builtins.skills = SkillRegistry
-    ctx.loader.builtins['education-erp-data'] = bridge.dataPlugin()
+    ctx.loader.builtins['erp-data'] = bridge.dataPlugin()
   })
   const tools = ctx.tools
   try {
@@ -209,7 +209,7 @@ it('requires confirmation before a knowledge update in the real Loader compositi
     ctx.loader.builtins['discovery-system-prompt'] = SystemPrompt
     ctx.loader.builtins['discovery-tools'] = ToolRuntime
     ctx.loader.builtins.skills = SkillRegistry
-    ctx.loader.builtins['education-erp-data'] = bridge.dataPlugin()
+    ctx.loader.builtins['erp-data'] = bridge.dataPlugin()
   })
   const tools = ctx.tools
   try {

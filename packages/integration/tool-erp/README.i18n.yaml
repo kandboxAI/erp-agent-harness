@@ -1,0 +1,46 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/integration/tool-erp/README.md
+/:
+  en: 6fa7e0bf3555f29e
+  zh: 9807223e6dd95a89
+/deepseek-ai-dsh-tool-erp:
+  en: afe104c1b507c071
+  zh: 045d6899f19f7001
+/deepseek-ai-dsh-tool-erp/summary:
+  en: a2c0659190006829
+  zh: e3ddebee68dfa725
+/deepseek-ai-dsh-tool-erp/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: 5b6bd00fce5371c3
+/deepseek-ai-dsh-tool-erp/use-this-package:
+  en: 32e93d259f351918
+  zh: 96ab18d7f8de806d
+/deepseek-ai-dsh-tool-erp/understand-the-implementation:
+  en: 083a7c23a79facbe
+  zh: 86813d8c1d2e8cec
+/deepseek-ai-dsh-tool-erp/further-exploration:
+  en: f635921a1fcf7008
+  zh: 5bea9ddced670de8
+/deepseek-ai-dsh-tool-erp/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-tool-erp/model-experience/erp-tool-schemas:
+  en: abce51768972171c
+  zh: 484bb32dcdec6599
+/deepseek-ai-dsh-tool-erp/model-experience/erp-tool-schemas/what-the-model-sees:
+  en: d8c37fbf4b1a50c3
+  zh: f7f87d0a8b349be7
+/deepseek-ai-dsh-tool-erp/model-experience/erp-tool-schemas/token-effect:
+  en: 8942174ff122d11a
+  zh: 8c7b9fa42fd733ee
+/deepseek-ai-dsh-tool-erp/model-experience/erp-tool-schemas/kv-cache-effect:
+  en: eaec807e48fa1137
+  zh: 85ea962f2605e501
+/deepseek-ai-dsh-tool-erp/known-limitations-and-deferred-work:
+  en: c718678b051a670a
+  zh: 765a8551634c3243
+/deepseek-ai-dsh-tool-erp/known-limitations-and-deferred-work/dev-note:
+  en: a929c07e312776c2
+  zh: 806ea881f18b102e

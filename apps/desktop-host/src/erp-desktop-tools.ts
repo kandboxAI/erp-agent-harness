@@ -5,7 +5,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import type {} from '@deepseek-ai/dsh-agent'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import { createUserMessage, type GenerateOptions, type StreamChunk } from '@deepseek-ai/dsh-llm'
-import { registerDesktopEducationErp, type SkillSourceConfig } from '@deepseek-ai/dsh-tool-education-erp'
+import { registerDesktopErp, type SkillSourceConfig } from '@deepseek-ai/dsh-tool-erp'
 
 declare module '@deepseek-ai/dsh-llm' {
   interface MessageSourceMap {
@@ -15,8 +15,8 @@ declare module '@deepseek-ai/dsh-llm' {
 
 type Primitive = string | number | boolean | null
 interface ToolReply { type: 'erp-tool-result'; requestId: string; status?: number; body?: string; ok?: boolean; actualPath?: string; error?: string }
-const DATA_PLUGIN_KEY = 'education-erp-data'
-const NAVIGATION_PLUGIN_KEY = 'education-erp-navigation'
+const DATA_PLUGIN_KEY = 'erp-data'
+const NAVIGATION_PLUGIN_KEY = 'erp-navigation'
 const DATA_CAPABILITY = 'erp.data'
 const NAVIGATION_CAPABILITY = 'erp.navigation'
 const AI_CAPABILITIES_PATH = '/api/plugins/ai-capabilities'
@@ -145,7 +145,7 @@ export class ErpDesktopTools {
    */
   dataPlugin(skillSources: SkillSourceConfig[] = [], skillCatalogRefreshMs = 15_000) {
     return {
-      name: 'education-erp-data',
+      name: 'erp-data',
       inject: ['tools', 'skills'],
       apply: (ctx: Context): void => {
         const memoryEnabled = new WeakSet<object>()
@@ -192,7 +192,7 @@ export class ErpDesktopTools {
           }] }
         })
 
-        registerDesktopEducationErp(ctx, {
+        registerDesktopErp(ctx, {
           baseUrl: this.apiOrigin, timeoutMs: 30_000, maxResponseChars: 50_000, writeApprovalTimeoutMs: 300_000,
           skillSources, skillCatalogRefreshMs, knowledgeFiles: true,
         }, {
@@ -215,12 +215,12 @@ export class ErpDesktopTools {
   /** Build the Loader entry that registers the internal ERP page navigation tool. */
   navigationPlugin() {
     return {
-      name: 'education-erp-navigation',
+      name: 'erp-navigation',
       inject: ['tools'],
       apply: (ctx: Context): void => {
         ctx.effect(() => ctx.tools.register(defineTool({
-          name: 'education_erp_open_page',
-          description: 'Open an authorized ERP page. Read GET /api/auth/menus with education_erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only.',
+          name: 'erp_open_page',
+          description: 'Open an authorized ERP page. Read GET /api/auth/menus with erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only.',
           parameters: {
             menu_key: { type: 'string', description: 'Stable menu_key returned by ERP menus; preferred over path.' },
             path: { type: 'string', description: 'ERP route from the current authorized menu; provide either menu_key or path.' },
@@ -273,7 +273,7 @@ export async function installErpDesktopTools(
   // 桌面启动配置只发送一次；入口须先于登录完成发布，读取仍由动态 ERP 提供器鉴权。
   ctx.on('webserver/index-inject', (table) => {
     table.push({ kind: 'global', name: '__DSH_USER_CONTEXT_PATH__', value: '/api/erp-user-context' })
-    table.push({ kind: 'global', name: '__DSH_KNOWLEDGE_BASES_PATH__', value: '/api/education/knowledge-bases' })
+    table.push({ kind: 'global', name: '__DSH_KNOWLEDGE_BASES_PATH__', value: '/api/erp/knowledge-bases' })
   })
   // Personal settings use a fixed authenticated target, separate from model tools.
   ctx.inject(['connection'], (scope) => {

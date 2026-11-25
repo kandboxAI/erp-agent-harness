@@ -63,8 +63,8 @@
       }
     },
     {
-      "name": "education_erp_open_page",
-      "description": "Open an authorized ERP page. Read GET /api/auth/menus with education_erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only.",
+      "name": "erp_open_page",
+      "description": "Open an authorized ERP page. Read GET /api/auth/menus with erp_api, then use its stable menu_key. The backend resolves the current path and checks access. This tool navigates only.",
       "parameters": {
         "type": "object",
         "properties": {

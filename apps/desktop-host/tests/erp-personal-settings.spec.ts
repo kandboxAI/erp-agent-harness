@@ -3,7 +3,7 @@ import { load } from 'js-yaml'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRuntime from '@deepseek-ai/dsh-tools'
 import type { IndexInjection } from '@deepseek-ai/dsh-host-webserver'
-import * as educationWeb from '../../../packages/client/ui-education-web/src/index.ts'
+import * as erpWeb from '../../../packages/client/ui-erp-web/src/index.ts'
 import { Context, Service } from '@deepseek-ai/cordis'
 import Loader from '@deepseek-ai/cordis-plugin-loader'
 import type { ConnectionFetchRoute } from '@deepseek-ai/dsh-client-connection'
@@ -56,7 +56,7 @@ it('loads the settings-only entry from the actual ERP Desktop patch without ifra
   const patch = load(await readFile(new URL('../erp-llm.patch.yml', import.meta.url), 'utf8')) as
     { insert?: { id: string; name: string; config?: { settingsOnly?: boolean } }[] }[]
   const entry = patch.flatMap(row => row.insert ?? []).find(row => row.id === 'erp-personal-settings')!
-  expect(entry.name).toBe('@deepseek-ai/dsh-client-ui-education-web')
+  expect(entry.name).toBe('@deepseek-ai/dsh-client-ui-erp-web')
   expect(entry.config).toEqual({ settingsOnly: true })
   class WebServer extends Service { constructor(ctx: Context) { super(ctx, 'webServer') } }
   const ctx = new Context()
@@ -65,13 +65,13 @@ it('loads the settings-only entry from the actual ERP Desktop patch without ifra
     await ctx.plugin(WebServer)
     await ctx.plugin(SystemPrompt)
     await ctx.plugin(ToolRuntime)
-    ctx.loader.builtins['erp-settings-fixture'] = educationWeb
+    ctx.loader.builtins['erp-settings-fixture'] = erpWeb
     await ctx.loader.create({ name: 'cordis:erp-settings-fixture', config: entry.config })
     await ctx.loader.await()
     for (const item of ctx.loader.entries()) await item.fiber?.await()
     const injections: IndexInjection[] = []
     ctx.emit('webserver/index-inject', injections, { principal: { kind: 'owner' } } as Parameters<Context['webServer']['collectIndexInjections']>[0])
-    const config = injections.find(row => row.kind === 'global' && row.name === '__DSH_EDUCATION_WEB_CONFIG__')
+    const config = injections.find(row => row.kind === 'global' && row.name === '__DSH_ERP_WEB_CONFIG__')
     if (config?.kind !== 'global') throw new Error('Desktop settings config was not injected')
     expect(config.value).toMatchObject({ settingsOnly: true })
     expect(ctx.tools.schemas()).toEqual([])

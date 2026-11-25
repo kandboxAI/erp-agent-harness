@@ -28,28 +28,28 @@ it('registers navigation and data as separate built-in plugins with independent 
     await ctx.plugin(SkillRegistry)
     await installErpDesktopTools(ctx, bridge, [], 15_000)
     expect(ctx.tools.schemas().map(tool => tool.name)).toEqual(expect.arrayContaining([
-      'education_erp_api', 'education_erp_query', 'education_erp_discover', 'education_erp_open_page',
+      'erp_api', 'erp_query', 'erp_discover', 'erp_open_page',
       'erp_knowledge_create_document', 'erp_knowledge_list_bases', 'erp_knowledge_search', 'erp_knowledge_read_document', 'erp_knowledge_update_document', 'erp_knowledge_version_status', 'erp_knowledge_submit_version',
     ]))
     const entries = [...ctx.loader.entries()]
-    const data = entries.find(entry => entry.options.name === 'cordis:education-erp-data')
-    const navigation = entries.find(entry => entry.options.name === 'cordis:education-erp-navigation')
+    const data = entries.find(entry => entry.options.name === 'cordis:erp-data')
+    const navigation = entries.find(entry => entry.options.name === 'cordis:erp-navigation')
     expect(data).toBeDefined()
     expect(navigation).toBeDefined()
     await ctx.loader.update(data!.id, { disabled: true })
-    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('education_erp_api')
-    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('education_erp_query')
-    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('education_erp_discover')
+    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_api')
+    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_query')
+    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_discover')
     expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_knowledge_create_document')
     expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_knowledge_list_bases')
     expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_knowledge_search')
     expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_knowledge_read_document')
     expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_knowledge_update_document')
-    expect(ctx.tools.schemas().map(tool => tool.name)).toContain('education_erp_open_page')
+    expect(ctx.tools.schemas().map(tool => tool.name)).toContain('erp_open_page')
     await ctx.loader.update(data!.id, { disabled: false })
     await ctx.loader.update(navigation!.id, { disabled: true })
-    expect(ctx.tools.schemas().map(tool => tool.name)).toContain('education_erp_api')
-    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('education_erp_open_page')
+    expect(ctx.tools.schemas().map(tool => tool.name)).toContain('erp_api')
+    expect(ctx.tools.schemas().map(tool => tool.name)).not.toContain('erp_open_page')
   } finally { await ctx.fiber.dispose() }
 })
 
@@ -60,7 +60,7 @@ it('enables and disables ERP built-in plugins as the tenant plugin catalog chang
     ctx.emit('webserver/index-inject', rows, { principal: { kind: 'owner' } } as Parameters<Context['webServer']['collectIndexInjections']>[0])
     return rows.filter(row => row.kind === 'global' && row.name === '__DSH_KNOWLEDGE_BASES_PATH__')
   }
-  const pickerInjection = [{ kind: 'global', name: '__DSH_KNOWLEDGE_BASES_PATH__', value: '/api/education/knowledge-bases' }]
+  const pickerInjection = [{ kind: 'global', name: '__DSH_KNOWLEDGE_BASES_PATH__', value: '/api/erp/knowledge-bases' }]
   let enabled: string[] = []
   const bridge: ErpDesktopTools = new ErpDesktopTools('http://127.0.0.1:8000', (message) => {
     const row = message as { requestId: string; path?: string }
@@ -73,21 +73,21 @@ it('enables and disables ERP built-in plugins as the tenant plugin catalog chang
     await ctx.plugin(ToolRuntime)
     await ctx.plugin(SkillRegistry)
     await installErpDesktopTools(ctx, bridge, [], 1_000)
-    expect(ctx.tools.get('education_erp_api')).toBeUndefined()
-    expect(ctx.tools.get('education_erp_open_page')).toBeUndefined()
+    expect(ctx.tools.get('erp_api')).toBeUndefined()
+    expect(ctx.tools.get('erp_open_page')).toBeUndefined()
     expect(knowledgeInjections()).toEqual(pickerInjection)
 
     enabled = enabledHarnessPlugins
     await vi.waitFor(() => {
-      expect(ctx.tools.get('education_erp_api')).toBeDefined()
-      expect(ctx.tools.get('education_erp_open_page')).toBeDefined()
+      expect(ctx.tools.get('erp_api')).toBeDefined()
+      expect(ctx.tools.get('erp_open_page')).toBeDefined()
     }, { interval: 10, timeout: 2_000 })
     expect(knowledgeInjections()).toEqual(pickerInjection)
 
     enabled = []
     await vi.waitFor(() => {
-      expect(ctx.tools.get('education_erp_api')).toBeUndefined()
-      expect(ctx.tools.get('education_erp_open_page')).toBeUndefined()
+      expect(ctx.tools.get('erp_api')).toBeUndefined()
+      expect(ctx.tools.get('erp_open_page')).toBeUndefined()
     }, { interval: 10, timeout: 2_000 })
     expect(knowledgeInjections()).toEqual(pickerInjection)
   } finally { await ctx.fiber.dispose() }
@@ -114,9 +114,9 @@ it('rechecks tenant plugin access before data requests and page navigation', asy
   bridge.navigationPlugin().apply(ctx)
   const exec = { signal: new AbortController().signal, agent: { session: { id: 'session-1' } } } as never
 
-  await expect(tools.get('education_erp_api')!.execute({ method: 'GET', path: '/api/users' }, exec))
+  await expect(tools.get('erp_api')!.execute({ method: 'GET', path: '/api/users' }, exec))
     .rejects.toThrow('当前 ERP 连接未开放此通用能力')
-  await expect(tools.get('education_erp_open_page')!.execute({ path: '/students/list' }, exec))
+  await expect(tools.get('erp_open_page')!.execute({ path: '/students/list' }, exec))
     .rejects.toThrow('当前 ERP 连接未开放此通用能力')
   expect(requests).toEqual(['/api/plugins/ai-capabilities', '/api/plugins/ai-capabilities'])
 })
@@ -157,15 +157,15 @@ it('restores the ERP API, query, and page navigation tools through desktop IPC',
   } as unknown as Context
   bridge.dataPlugin().apply(ctx)
   bridge.navigationPlugin().apply(ctx)
-  expect([...tools.keys()].sort()).toEqual(['education_erp_api', 'education_erp_discover', 'education_erp_open_page', 'education_erp_query', 'erp_knowledge_create_document', 'erp_knowledge_list_bases', 'erp_knowledge_read_document', 'erp_knowledge_search', 'erp_knowledge_submit_version', 'erp_knowledge_update_document', 'erp_knowledge_version_status', 'erp_position_memory_read', 'erp_position_memory_update'])
+  expect([...tools.keys()].sort()).toEqual(['erp_api', 'erp_discover', 'erp_knowledge_create_document', 'erp_knowledge_list_bases', 'erp_knowledge_read_document', 'erp_knowledge_search', 'erp_knowledge_submit_version', 'erp_knowledge_update_document', 'erp_knowledge_version_status', 'erp_open_page', 'erp_position_memory_read', 'erp_position_memory_update', 'erp_query'])
   const exec = { signal: new AbortController().signal, agent: { session: { id: 'session-1' } } } as never
-  const api = await tools.get('education_erp_api')!.execute({ method: 'GET', path: '/api/users' }, exec)
+  const api = await tools.get('erp_api')!.execute({ method: 'GET', path: '/api/users' }, exec)
   expect(api).toMatchObject({ ok: true, status: 200 })
-  const catalog = await tools.get('education_erp_query')!.execute({ operation: 'catalog' }, exec)
+  const catalog = await tools.get('erp_query')!.execute({ operation: 'catalog' }, exec)
   expect(catalog).toMatchObject({ code: 0, data: { resources: [] } })
-  const discovered = await tools.get('education_erp_discover')!.execute({ action: 'search', question: '教师人数' }, exec)
+  const discovered = await tools.get('erp_discover')!.execute({ action: 'search', question: '教师人数' }, exec)
   expect(discovered).toMatchObject({ code: 0, data: { catalog_revision: 'sha256:test' } })
-  const opened = await tools.get('education_erp_open_page')!.execute({ path: '/students/list' }, exec)
+  const opened = await tools.get('erp_open_page')!.execute({ path: '/students/list' }, exec)
   expect(opened).toMatchObject({ ok: true, actualPath: '/students/list' })
   expect(messages.filter(message => (message as { path?: string }).path !== '/api/plugins/ai-capabilities')).toMatchObject([
     { kind: 'api', path: '/api/harness/api' },

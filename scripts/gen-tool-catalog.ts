@@ -60,7 +60,7 @@ import * as ToolBashPersistent from '@deepseek-ai/dsh-tool-bash-persistent'
 import * as ToolPwshPersistent from '@deepseek-ai/dsh-tool-pwsh-persistent'
 import CordisHostRunner from '@deepseek-ai/dsh-cordis-host-runner'
 import * as ToolCordis from '@deepseek-ai/dsh-tool-cordis'
-import * as ToolEducationErp from '../packages/integration/tool-education-erp/src/index.ts'
+import * as ToolErp from '../packages/integration/tool-erp/src/index.ts'
 import * as ToolPresent from '@deepseek-ai/dsh-tool-present'
 import * as ToolFs from '@deepseek-ai/dsh-tool-fs'
 import * as ToolFsSearch from '@deepseek-ai/dsh-tool-fs-search'
@@ -381,11 +381,11 @@ const TOOL_PACKAGES: ToolPackage[] = [
       'Creator mode provides two read-only runtime inspection tools. The Cordis host runner supplies the inspection registry; Client queries require a connected page. Author persistent changes as bundles and install them with plugin_manager.',
   },
   {
-    pkg: '@deepseek-ai/dsh-tool-education-erp',
-    dir: 'tool-education-erp',
-    source: 'packages/integration/tool-education-erp/src/index.ts',
+    pkg: '@deepseek-ai/dsh-tool-erp',
+    dir: 'tool-erp',
+    source: 'packages/integration/tool-erp/src/index.ts',
     requires: ['ctx.tools', 'ctx.connection', 'ctx.skills', 'an ERP login in the embedded page'],
-    writes: ['tool/call', 'tool/result', 'ERP state for mutating education_erp_api calls'],
+    writes: ['tool/call', 'tool/result', 'ERP state for mutating erp_api calls'],
     async mount(ctx) {
       ctx.provide('connection', { fetch: { register: () => async () => {} } } as never)
       await ctx.plugin(SkillRegistry)
@@ -400,7 +400,7 @@ const TOOL_PACKAGES: ToolPackage[] = [
           if (ctx.tools.get('erp_knowledge_check_file')) done()
         })
       })
-      await ctx.plugin(ToolEducationErp, {
+      await ctx.plugin(ToolErp, {
         knowledgeFiles: true,
         baseUrl: 'http://127.0.0.1:8000/',
         timeoutMs: 30_000,

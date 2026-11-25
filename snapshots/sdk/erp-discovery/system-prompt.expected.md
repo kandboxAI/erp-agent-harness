@@ -68,8 +68,8 @@ interface ToolArgsMap {
     /** Required with sandbox_permissions: one sentence for the user explaining why this exact file operation needs the wider access. Use the language of the user’s current request. */
     justification?: string;
   } & Record<string, JsonValue>;
-  /** Call an ERP business HTTP operation as the logged-in user. Discover operations with education_erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use education_erp_query for structured reads. */
-  education_erp_api: {
+  /** Call an ERP business HTTP operation as the logged-in user. Discover operations with erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use erp_query for structured reads. */
+  erp_api: {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     /** ERP path beginning with /, normally /api/.... */
     path: string;
@@ -78,8 +78,8 @@ interface ToolArgsMap {
     /** Optional JSON request body for POST, PUT, or PATCH. */
     body?: JsonValue;
   } & Record<string, JsonValue>;
-  /** Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in education_erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with education_erp_api. */
-  education_erp_discover: {
+  /** Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with erp_api. */
+  erp_discover: {
     action: "domains" | "search" | "describe" | "validate" | "metric";
     /** Business question for search; do not include actual personal identifiers. */
     question?: string;
@@ -92,7 +92,7 @@ interface ToolArgsMap {
     limit?: number;
     /** Returned catalog revision; required for describe, validate and metric. Search again if stale. */
     catalog_revision?: string;
-    /** Structured education_erp_query arguments for validate. */
+    /** Structured erp_query arguments for validate. */
     query?: JsonValue;
     /** Reviewed metric ID returned by search/describe. */
     metric_id?: string;
@@ -103,8 +103,8 @@ interface ToolArgsMap {
     /** Metric group pagination offset, use next_offset when truncated. */
     offset?: number;
   } & Record<string, JsonValue>;
-  /** Read approved ERP data as the logged-in user. First search and describe relevant resources with education_erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks. */
-  education_erp_query: {
+  /** Read approved ERP data as the logged-in user. First search and describe relevant resources with erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks. */
+  erp_query: {
     operation: "catalog" | "query" | "plan";
     /** Required for operation plan; put all query options inside this object, leaving only operation, plan and catalog_revision outside. Schema: {version:1, root:{resource:"table_from_describe",alias:"r"}, joins:[{from_alias:"r",relation_id:"relation:ID_FROM_DESCRIBE",alias:"d",kind:"left"}], select:[{field:"d.department_name",as:"department"}], group_by:["d.department_name"], aggregates:[{function:"count",as:"count"}], filters:[{field:"r.status",op:"eq",value:1}], order:[{field:"count",direction:"desc"}], limit:20,offset:0,include_count:false}. Use execution.max_joins returned by describe as the join limit; kind inner or left. Field references use alias.field; output aliases use ASCII letters, digits or underscores. Aggregates count/sum/avg/min/max, only root fields (count may omit field). For aggregation select exactly the group_by fields; for row reads omit aggregates/group_by. total counts result rows/groups, not root entities; follow next_offset if truncated. Use actual described table and field names, not this example placeholders. */
     plan?: JsonValue;
@@ -417,9 +417,9 @@ interface ToolOutputMap {
     before: string;
     after: string;
   };
-  education_erp_api: JsonValue;
-  education_erp_discover: JsonValue;
-  education_erp_query: JsonValue;
+  erp_api: JsonValue;
+  erp_discover: JsonValue;
+  erp_query: JsonValue;
   erp_knowledge_create_document: JsonValue;
   erp_knowledge_list_bases: JsonValue;
   erp_knowledge_read_document: JsonValue;

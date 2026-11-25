@@ -507,7 +507,7 @@ export async function packageTarget(
       buildPaths.packedDsh,
     ], buildEnv, REPOSITORY_ROOT)
     // Private ERP packages are excluded from the public release family.
-    for (const directory of ['packages/integration/tool-education-erp', 'packages/client/ui-ai-control', 'packages/client/ui-education-web']) {
+    for (const directory of ['packages/integration/tool-erp', 'packages/client/ui-ai-control', 'packages/client/ui-erp-web']) {
       await executePreparation(['--dir', directory, 'pack', '--pack-destination', buildPaths.packedDsh], buildEnv, REPOSITORY_ROOT)
     }
     await executePreparation(['run', 'release:pack', '--family', 'vendor', '--out', buildPaths.packedVendor, ...packArguments], buildEnv, REPOSITORY_ROOT)

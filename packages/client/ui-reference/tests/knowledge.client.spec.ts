@@ -32,7 +32,7 @@ it('inserts only the picked knowledge base and releases both registrations on di
   ctx.provide('sessions', { binding: () => ({}), scope: () => ctx })
   ctx.provide('conversation', { input: { for: () => ({ state: { getSnapshot: () => ({ draftRev }) } }) } })
   const baseId = '01900000-0000-7000-8000-000000000001'
-  vi.stubGlobal('__DSH_KNOWLEDGE_BASES_PATH__', '/api/education/knowledge-bases')
+  vi.stubGlobal('__DSH_KNOWLEDGE_BASES_PATH__', '/api/erp/knowledge-bases')
   vi.stubGlobal('location', { origin: 'http://localhost:19387' })
   const fetch = vi.fn((_url: URL, _init?: RequestInit) => Promise.resolve(Response.json({ bases: [
     { knowledge_base_id: baseId, knowledge_base_name: '员工制度' },

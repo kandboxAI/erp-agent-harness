@@ -33,7 +33,7 @@ it('shows tenant-enabled business skills in the picker and removes them after de
       const directory = join(root, name)
       await mkdir(directory)
       await writeFile(join(directory, 'SKILL.md'),
-        `---\nname: ${name}\ndescription: Prepare an education report.\n---\nUse approved ERP data.\n`)
+        `---\nname: ${name}\ndescription: Prepare a monthly report.\n---\nUse approved ERP data.\n`)
     }
     const config = fileURLToPath(new URL('./fixtures/erp-skills.cordis.yml', import.meta.url))
     ctx = await boot('erp-skill-catalog-test', config, [], (ctx) => {
@@ -41,7 +41,7 @@ it('shows tenant-enabled business skills in the picker and removes them after de
         'system-prompt': SystemPrompt, tools: ToolRuntime, skills: SkillRegistry,
         sessions: SessionStore, agents: AgentRegistry,
         'session-projections': SessionProjectionRegistry, 'session-query': SqliteSessionQueryEngine,
-        'education-erp-data': bridge.dataPlugin([
+        'erp-data': bridge.dataPlugin([
           { pluginKey: 'edu', customSkillDirs: [], bundledSkillDir: root },
         ], 1_000),
       })
@@ -57,7 +57,7 @@ it('shows tenant-enabled business skills in the picker and removes them after de
       ({ name, description, modelInvocable }))).toMatchInlineSnapshot(`
       [
         {
-          "description": "Prepare an education report.",
+          "description": "Prepare a monthly report.",
           "modelInvocable": true,
           "name": "edu-report",
         },

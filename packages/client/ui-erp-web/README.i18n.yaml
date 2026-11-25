@@ -1,0 +1,61 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/client/ui-erp-web/README.md
+/:
+  en: 9ea4f81ffbe441ef
+  zh: 97aa48fe3356cb4e
+/deepseek-ai-dsh-client-ui-erp-web:
+  en: 1c3f5b691be1908a
+  zh: df20c4d759faa40e
+/deepseek-ai-dsh-client-ui-erp-web/summary:
+  en: 54a38b15c4d5bacc
+  zh: 1f31d87f182c1531
+/deepseek-ai-dsh-client-ui-erp-web/table-of-contents:
+  en: 91fbcc0cc7732ceb
+  zh: 941320beaa721cd4
+/deepseek-ai-dsh-client-ui-erp-web/use-this-package:
+  en: 7026977ed95999e8
+  zh: 829c60d3e14d73d7
+/deepseek-ai-dsh-client-ui-erp-web/personal-instructions:
+  en: 69635cbf52c4d6d8
+  zh: 799817fcb9d452ab
+/deepseek-ai-dsh-client-ui-erp-web/quick-assistant:
+  en: e17653d36f8fdc78
+  zh: bb99dc647e8fed3b
+/deepseek-ai-dsh-client-ui-erp-web/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/navigation-tool:
+  en: f642eb5538490773
+  zh: ccae3ce619d0c33f
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/navigation-tool/what-the-model-sees:
+  en: 5b3f0521d5dc911a
+  zh: 0eba42bb533bc37a
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/navigation-tool/token-effect:
+  en: 4616925460fad549
+  zh: 1fe88686d568f860
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/navigation-tool/kv-cache-effect:
+  en: 259cba3458b62d5c
+  zh: de612afe70d31df3
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/erp-page-context:
+  en: d998155f53d67760
+  zh: f4bd364337b7f1fa
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/erp-page-context/what-the-model-sees:
+  en: c6b37d30d277c664
+  zh: a290d97fdcdb29ca
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/erp-page-context/what-the-model-sees/page-context-instruction:
+  en: c064dde877d66f1a
+  zh: 9ffa65625589961b
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/erp-page-context/token-effect:
+  en: 799432ab60df8ea4
+  zh: 50d001600b69d3c6
+/deepseek-ai-dsh-client-ui-erp-web/model-experience/erp-page-context/kv-cache-effect:
+  en: e16f4bbdd4065a02
+  zh: 41c166d683dd3b74
+/deepseek-ai-dsh-client-ui-erp-web/known-limitations-and-deferred-work:
+  en: 026a1a770a44e854
+  zh: 2a47284185e14fb5
+/deepseek-ai-dsh-client-ui-erp-web/known-limitations-and-deferred-work/dev-note:
+  en: 0a1253c6f7b5e8b9
+  zh: 9f56528562c7c914

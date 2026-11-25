@@ -63,8 +63,8 @@
       }
     },
     {
-      "name": "education_erp_api",
-      "description": "Call an ERP business HTTP operation as the logged-in user. Discover operations with education_erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use education_erp_query for structured reads.",
+      "name": "erp_api",
+      "description": "Call an ERP business HTTP operation as the logged-in user. Discover operations with erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use erp_query for structured reads.",
       "parameters": {
         "type": "object",
         "properties": {
@@ -98,8 +98,8 @@
       }
     },
     {
-      "name": "education_erp_discover",
-      "description": "Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in education_erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with education_erp_api.",
+      "name": "erp_discover",
+      "description": "Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with erp_api.",
       "parameters": {
         "type": "object",
         "properties": {
@@ -151,7 +151,7 @@
             "description": "Returned catalog revision; required for describe, validate and metric. Search again if stale."
           },
           "query": {
-            "description": "Structured education_erp_query arguments for validate."
+            "description": "Structured erp_query arguments for validate."
           },
           "metric_id": {
             "type": "string",
@@ -178,8 +178,8 @@
       }
     },
     {
-      "name": "education_erp_query",
-      "description": "Read approved ERP data as the logged-in user. First search and describe relevant resources with education_erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks.",
+      "name": "erp_query",
+      "description": "Read approved ERP data as the logged-in user. First search and describe relevant resources with erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks.",
       "parameters": {
         "type": "object",
         "properties": {
