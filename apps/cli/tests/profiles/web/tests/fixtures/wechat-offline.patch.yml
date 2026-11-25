@@ -1,0 +1,6 @@
+# 检查内置入口时不发起真实微信登录；此地址不是测试监听资源。
+- id: dsh-wechat
+  config:
+    baseUrl: http://127.0.0.1:9
+    storageDir: !!js process.getBuiltinModule('node:path').join(ctx.get('profileContext').dir, 'wechat')
+    silent: true

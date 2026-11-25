@@ -1,0 +1,36 @@
+# Final ERP Desktop layer: a saved DSH profile cannot replace the platform model route.
+- id: agent-default-model
+  config:
+    provider: erp-gateway
+    model: deepseek-flash
+
+- id: deepseek-account
+  disabled: true
+
+- id: llm-pi-ai
+  disabled: true
+
+- id: llm-deepseek
+  disabled: true
+
+- id: llm-deepseek-account
+  disabled: true
+
+# ERP Desktop uses enterprise feedback instead of native Session feedback.
+- id: ui-message-feedback
+  disabled: true
+
+- id: command-feedback
+  disabled: true
+
+- id: message-feedback
+  disabled: true
+
+# A new row must be inserted; an unknown id-only patch would be skipped.
+- insert:
+    - id: enterprise-ai-feedback
+      name: '@deepseek-ai/dsh-client-ui-ai-control'
+    - id: erp-personal-settings
+      name: '@deepseek-ai/dsh-client-ui-education-web'
+      config:
+        settingsOnly: true

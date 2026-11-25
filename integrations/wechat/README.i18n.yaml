@@ -1,0 +1,25 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write integrations/wechat/README.md
+/:
+  en: 9b1cd2739f8ef761
+  zh: 915efe8b612cee1d
+/bundled-wechat-integration:
+  en: 3f193996ee9efae3
+  zh: 8855a6c373df96db
+/bundled-wechat-integration/summary:
+  en: 5c51c20e39684b09
+  zh: f7ce2b4223188c9f
+/bundled-wechat-integration/table-of-contents:
+  en: daeda6520c0cfcca
+  zh: e91cfb14a0e5692c
+/bundled-wechat-integration/configuration:
+  en: 94f48e5251500c4a
+  zh: 621b374e7814bdcd
+/bundled-wechat-integration/verification-and-limits:
+  en: 54ec217dbd2a0f56
+  zh: 3a92d2879f9fb9cc
+/bundled-wechat-integration/dev-note:
+  en: 2e0e56c5bcd37ca3
+  zh: 5f3c4ed357422ed1

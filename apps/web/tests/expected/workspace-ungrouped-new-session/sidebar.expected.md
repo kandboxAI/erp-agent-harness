@@ -1,0 +1,5 @@
+- treeitem "Ungrouped New session in Ungrouped" [expanded]:
+  - text: Ungrouped
+  - button "New session in Ungrouped"
+- treeitem "New Session" [selected]
+- treeitem "Untitled 1min"

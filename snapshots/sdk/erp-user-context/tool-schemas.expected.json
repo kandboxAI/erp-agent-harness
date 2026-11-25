@@ -1,0 +1,1104 @@
+{
+  "initial": [
+    {
+      "name": "create_goal",
+      "description": "Create a persisted goal that keeps this session working across automatic continuation rounds. Use it when the direct human request is a long-running objective, even if the user did not say \"goal\"; not for single-turn work.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "objective": {
+            "type": "string",
+            "description": "The concrete completion objective inferred from the direct human request."
+          },
+          "max_goal_rounds": {
+            "type": "number",
+            "description": "Optional positive safe-integer limit on automatic continuation rounds."
+          }
+        },
+        "required": [
+          "objective"
+        ]
+      }
+    },
+    {
+      "name": "edit",
+      "description": "Edit an existing UTF-8 text file by replacing literal text.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to edit, resolved by the filesystem backend."
+          },
+          "old_string": {
+            "type": "string",
+            "description": "Literal text to replace."
+          },
+          "new_string": {
+            "type": "string",
+            "description": "Literal replacement text. Use an empty string to delete the match."
+          },
+          "replace_all": {
+            "type": "boolean",
+            "description": "Replace all matches. Defaults to false; when false, old_string must appear exactly once."
+          },
+          "sandbox_permissions": {
+            "type": "string",
+            "description": "The narrowest wider sandbox mode for a one-shot retry of the exact operation the sandbox just denied; the retry asks the user for approval.",
+            "enum": [
+              "workspace-write",
+              "danger-full-access"
+            ]
+          },
+          "justification": {
+            "type": "string",
+            "description": "Required with sandbox_permissions: one sentence for the user explaining why this exact file operation needs the wider access. Use the language of the user’s current request."
+          }
+        },
+        "required": [
+          "file_path",
+          "old_string",
+          "new_string"
+        ]
+      }
+    },
+    {
+      "name": "education_erp_api",
+      "description": "Call an ERP business HTTP operation as the logged-in user. Discover operations with education_erp_discover search then describe. For menu navigation use GET /api/auth/menus directly. The backend filters protected personal data and unknown text; hidden fields do not mean empty or zero. Writes require user confirmation and return status; knowledge document creation also returns document_id, version_id and draft status. Authentication and credential endpoints are isolated. Never pass passwords, access tokens or redacted placeholders. Use education_erp_query for structured reads.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "ERP path beginning with /, normally /api/...."
+          },
+          "query": {
+            "type": "object",
+            "description": "Optional query-string values.",
+            "additionalProperties": true
+          },
+          "body": {
+            "description": "Optional JSON request body for POST, PUT, or PATCH."
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "education_erp_discover",
+      "description": "Discover approved ERP data and operations for the current question. Use search with the user question, then describe selected IDs using the returned catalog_revision. Read definitions, grain and metric scope before querying. You may search again with narrower keywords if resources are missing. Never guess tables, parameters or statistical definitions. For multi-table reads, describe related resources and use only relation IDs with join_supported=true in education_erp_query operation plan. Use metric for a reviewed business metric, or validate to check a proposed structured query or plan without executing it. Menu navigation still uses GET /api/auth/menus with education_erp_api.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "domains",
+              "search",
+              "describe",
+              "validate",
+              "metric"
+            ]
+          },
+          "question": {
+            "type": "string",
+            "description": "Business question for search; do not include actual personal identifiers."
+          },
+          "ids": {
+            "type": "array",
+            "description": "Up to six IDs returned by search; required for describe.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "domain_ids": {
+            "type": "array",
+            "description": "Preferred domains, not a restriction on cross-domain search.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kinds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "resource",
+                "operation",
+                "metric"
+              ]
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Search candidates, at most twelve."
+          },
+          "catalog_revision": {
+            "type": "string",
+            "description": "Returned catalog revision; required for describe, validate and metric. Search again if stale."
+          },
+          "query": {
+            "description": "Structured education_erp_query arguments for validate."
+          },
+          "metric_id": {
+            "type": "string",
+            "description": "Reviewed metric ID returned by search/describe."
+          },
+          "filters": {
+            "description": "Optional metric filters using the described resource fields."
+          },
+          "group_by": {
+            "type": "array",
+            "description": "Metric dimensions from its definition.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Metric group pagination offset, use next_offset when truncated."
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "education_erp_query",
+      "description": "Read approved ERP data as the logged-in user. First search and describe relevant resources with education_erp_discover, then query only described fields with the returned catalog_revision. Use operation query for one resource, or plan for multi-table reads via described executable relation IDs. No SQL or guessed relationships. Plan aggregates count root records once per group, and aggregate fields must belong to the root; choose the entity being measured as root. Cross-group totals may overlap: respect group_totals_additive and never sum overlapping groups as a total. Use reviewed metric definitions when applicable. Never pass identity or tokens. Catalog is a legacy operation; use discovery for new tasks.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "catalog",
+              "query",
+              "plan"
+            ]
+          },
+          "plan": {
+            "description": "Required for operation plan; put all query options inside this object, leaving only operation, plan and catalog_revision outside. Schema: {version:1, root:{resource:\"table_from_describe\",alias:\"r\"}, joins:[{from_alias:\"r\",relation_id:\"relation:ID_FROM_DESCRIBE\",alias:\"d\",kind:\"left\"}], select:[{field:\"d.department_name\",as:\"department\"}], group_by:[\"d.department_name\"], aggregates:[{function:\"count\",as:\"count\"}], filters:[{field:\"r.status\",op:\"eq\",value:1}], order:[{field:\"count\",direction:\"desc\"}], limit:20,offset:0,include_count:false}. Use execution.max_joins returned by describe as the join limit; kind inner or left. Field references use alias.field; output aliases use ASCII letters, digits or underscores. Aggregates count/sum/avg/min/max, only root fields (count may omit field). For aggregation select exactly the group_by fields; for row reads omit aggregates/group_by. total counts result rows/groups, not root entities; follow next_offset if truncated. Use actual described table and field names, not this example placeholders."
+          },
+          "resource": {
+            "type": "string",
+            "description": "Resource name from the catalog; required for query."
+          },
+          "fields": {
+            "type": "array",
+            "description": "Columns to return. Omit for the resource default.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "in",
+                    "like",
+                    "ilike",
+                    "is_null"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "op"
+              ]
+            }
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "direction"
+              ]
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum rows, capped by the ERP."
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "include_count": {
+            "type": "boolean"
+          },
+          "catalog_revision": {
+            "type": "string",
+            "description": "Current revision from resource discovery; stale versions require a new search."
+          },
+          "group_by": {
+            "type": "array",
+            "description": "Up to three approved dimensions. Requires aggregate; no row ordering. Follow next_offset if grouped results are truncated.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "aggregate": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "function": {
+                "type": "string",
+                "enum": [
+                  "count",
+                  "sum",
+                  "avg",
+                  "min",
+                  "max"
+                ]
+              },
+              "field": {
+                "type": "string",
+                "description": "Required except for counting rows."
+              }
+            },
+            "required": [
+              "function"
+            ]
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_create_document",
+      "description": "Create a new online Markdown draft in a chosen ERP knowledge base after explicit user confirmation. Use erp_knowledge_list_bases to select a real knowledge_base_id; no existing document or edit_token is required. Requires knowledge management permission. Success returns document_id, version_id and status_code=draft. Then use erp_knowledge_version_status to obtain the exact hash for erp_knowledge_submit_version. Humans review and publish in ERP; creating a draft does not make it searchable or grant read access. Do not use the update tool for creation. A local Markdown file is not a knowledge-base write. If the result is unclear or no document_id is returned, do not claim success or automatically retry creation; ask the user to check ERP for a possible existing draft.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "knowledge_base_id": {
+            "type": "string",
+            "description": "ERP knowledge_base_id returned by erp_knowledge_list_bases and selected by the user."
+          },
+          "document_name": {
+            "type": "string",
+            "description": "Title of the new knowledge document, 1 to 256 characters."
+          },
+          "content": {
+            "type": "string",
+            "description": "Complete Markdown body for the new draft, 1 to 200000 characters."
+          },
+          "change_reason": {
+            "type": "string",
+            "description": "Optional purpose or reason for this new document."
+          }
+        },
+        "required": [
+          "knowledge_base_id",
+          "document_name",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_list_bases",
+      "description": "List or search the registered knowledge bases that the current ERP user may manage before creating a document. This is a read operation and does not require searching published documents first. Use the returned knowledge_base_id, never guess it. If several bases match and the destination is unclear, ask the user to choose. An empty list means no matching base is visible to this account, not that the module is absent. Respect has_more and next_offset. Do not probe guessed health or administrative paths when a request fails; use the returned error code to distinguish tenant enablement, missing routes and permissions.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional knowledge base name or keywords, up to 256 characters."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Pagination offset; use next_offset when has_more is true."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Bases per page, 1 to 50; default 20."
+          }
+        }
+      }
+    },
+    {
+      "name": "erp_knowledge_read_document",
+      "description": "Read a page of an authorized internal document using document_id returned by erp_knowledge_search. Access is checked again on every read. Cite document_name and chunk_index, and respect truncated markers. Use returned citation_url values unchanged for numbered Markdown source links beside supported claims; never invent source links. Use page and total_chunks to request more context when needed. If access has been revoked or the source changed, do not answer from an older excerpt as if it were current.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id returned by erp_knowledge_search."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number starting at 1; default 1."
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Chunks per page, 1 to 20; default 10."
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_search",
+      "description": "Search internal company knowledge, policies and manuals allowed for the current ERP user. Use this tool for questions requiring internal documents. Results include document_id, document_name, chunk_index, content, source_hash_snapshot and rerank diagnostics. Cite the document name and chunk index when answering. For each supported claim append a numbered Markdown link using the returned citation_url unchanged, for example `[1](citation_url)`. Reuse its number for the same source; never invent a citation URL. Include the document name in the link title. Read longer context with erp_knowledge_read_document. If the authorized scope is empty or evidence is insufficient, say so; do not invent a policy. To add a new document, use erp_knowledge_list_bases and erp_knowledge_create_document; finding a published document first is unnecessary.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Question or keywords to find in authorized internal documents."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum search hits, 1 to 12; default 5."
+          },
+          "document_ids": {
+            "type": "array",
+            "description": "Optional document_id values returned by knowledge search to narrow its scope.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "knowledge_base_ids": {
+            "type": "array",
+            "description": "Optional ERP knowledge base IDs to restrict retrieval. Knowledge-base references in the current user message restrict searches to their IDs. This filter intersects document_ids and current read permissions; an empty list searches nothing.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_submit_version",
+      "description": "Submit one ERP draft for human review and freeze that exact version. Requires knowledge management permission and explicit user confirmation. Obtain version_id and content_hash_snapshot from erp_knowledge_version_status; never guess them. This does not approve, publish, change WeKnora, or replace the published version. A human reviewer and publisher must complete the remaining steps in ERP. A configured workflow may require the user to select reviewers in ERP before submission.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string",
+            "description": "Exact draft version UUID returned by ERP version status."
+          },
+          "content_hash_snapshot": {
+            "type": "string",
+            "description": "Exact draft content hash returned by ERP version status."
+          }
+        },
+        "required": [
+          "version_id",
+          "content_hash_snapshot"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_update_document",
+      "description": "Save a draft edit of an online Markdown document after explicit user confirmation. First query erp_knowledge_version_status and pass its root edit_token as source_hash_snapshot; a null token means editing is unavailable. For local changes, use replacements with exact before/after text: ERP reads the complete original and preserves all other content. Each before must match exactly once; missing, repeated or overlapping fragments reject the whole edit. Up to 20 replacements are allowed. Omit document_name to keep the title. Use content only for a complete replacement supplied by the user; never rebuild the document from truncated or redacted excerpts. Do not send content and replacements together. Uploaded files, including .md, and external sources are read-only. Frozen review or approved versions cannot be edited. Requires knowledge management permission. Saving does not change the published version or make the draft searchable. After saving, query version status and use erp_knowledge_submit_version for review; humans review and request publication in ERP.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "ERP document_id returned by knowledge search or read."
+          },
+          "source_hash_snapshot": {
+            "type": "string",
+            "description": "Root edit_token returned by version status; before any draft exists, the current published source_hash_snapshot is also valid. Never guess a token or edit when the token is null."
+          },
+          "document_name": {
+            "type": "string",
+            "description": "Optional new document title, 1 to 256 characters; omit to keep the current title."
+          },
+          "content": {
+            "type": "string",
+            "description": "Complete replacement Markdown supplied by the user, 1 to 200000 characters. Mutually exclusive with replacements."
+          },
+          "replacements": {
+            "type": "array",
+            "description": "Up to 20 exact non-overlapping replacements against the same original document; omit content when using these.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "before": {
+                  "type": "string",
+                  "description": "Exact original text, including indentation and newlines; must occur exactly once."
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Replacement Markdown; an empty string deletes the matched fragment."
+                }
+              },
+              "required": [
+                "before",
+                "after"
+              ]
+            }
+          },
+          "change_reason": {
+            "type": "string",
+            "description": "Optional reason for this draft change, shown to the human reviewer."
+          }
+        },
+        "required": [
+          "document_id",
+          "source_hash_snapshot"
+        ]
+      }
+    },
+    {
+      "name": "erp_knowledge_version_status",
+      "description": "Read ERP document version numbers, draft concurrency tokens, review states and publication progress. Requires knowledge management permission. This tool returns metadata only, without draft bodies or reviewer comments. Use the root edit_token as source_hash_snapshot when saving an edit, including a revision after rejection; a null token means editing is unavailable. Use the exact version_id and content_hash_snapshot when submitting review. Published content remains in use until a human-reviewed version is successfully published.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "ERP logical document UUID, not a WeKnora document identifier."
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "exit_plan_mode",
+      "description": "Use only in plan mode. Present your plan for the user's review and, on approval, leave plan mode. The user may approve (carry out the plan from your next step) or keep planning — their feedback comes back in the tool result; revise and present again.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "description": "The complete plan, as markdown, starting with a # heading that names it."
+          }
+        },
+        "required": [
+          "plan"
+        ]
+      }
+    },
+    {
+      "name": "get_goal",
+      "description": "Read the current session goal, including the id and revision that update_goal requires.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "glob",
+      "description": "Find files, not directories, whose paths match a glob pattern, including hidden and ignored files. Returns up to 100 paths in modification-time order; a larger result keeps the first paths and reports where the complete list was saved.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Glob pattern to match file paths against (e.g. \"**/*.ts\", \"src/**/*.test.js\"). A pattern with no \"/\" matches the basename at any depth, so \"*\" and \"*.ts\" both search the whole tree; include a separator to anchor the depth."
+          },
+          "path": {
+            "type": "string",
+            "description": "Directory to search in. Defaults to the session workspace; a relative path resolves against it."
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    {
+      "name": "grep",
+      "description": "Search file contents with a ripgrep regular expression. Returns matching lines with line numbers, grouped by file. Returns up to 250 matches; a larger result reports where the complete match list was saved.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Regular expression to search for (ripgrep syntax)."
+          },
+          "path": {
+            "type": "string",
+            "description": "File or directory to search. Defaults to the session workspace; a relative path resolves against it."
+          },
+          "include": {
+            "type": "string",
+            "description": "One glob filter for which files to search (e.g. \"*.ts\", \"*.{js,jsx}\"). Not a list; negation is not supported."
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    {
+      "name": "interrupt_agent",
+      "description": "Ask a subagent to stop its current work. This call returns without waiting for it to stop. You can continue a direct child's conversation later with send_message. Subagents it started will keep running.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The id of an agent created under you: your direct child or a deeper descendant."
+          }
+        },
+        "required": [
+          "agent_id"
+        ]
+      }
+    },
+    {
+      "name": "job_kill",
+      "description": "Request cancellation of a running background job.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "Job id returned by the tool that started the background work."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional short reason, recorded in the log and forwarded to the job."
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "job_list",
+      "description": "List your background jobs (running and finished) with their ids, kinds, and statuses.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "job_output",
+      "description": "Read a background job: output since the previous read for stream jobs, or the result of a finished final-output job.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "Job id returned by the tool that started the background work."
+          },
+          "wait": {
+            "type": "boolean",
+            "description": "Block until the job finishes or the timeout expires; a timed-out wait leaves the job running. Defaults to false."
+          },
+          "timeout_ms": {
+            "type": "number",
+            "description": "Max wait in milliseconds with wait: true. Defaults to and is capped by configuration."
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "list_agents",
+      "description": "List subagents you started, with their ids, labels, and status. running means it is working; inactive means it is not currently working. You will be notified when a subagent finishes; there is no need to keep checking its status. Use send_message to continue the conversation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "description": "children (default) lists direct children, which accept send_message in any status. descendants lists the whole tree below you with each entry's parent session id and depth; entries deeper than 1 accept only interrupt_agent.",
+            "enum": [
+              "children",
+              "descendants"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "pwsh",
+      "description": "Execute a PowerShell command (`pwsh -Command`) and return its stdout/stderr. Each call runs in a fresh pwsh process; pass `workdir` instead of using `cd`. Paths use native Windows form (`C:\\...`); read environment variables with `$env:NAME`. Managed `$env:DSH_*` variables expose current harness environment facts. Long output is truncated to its tail; the full output is saved to a file whose path is reported when available. On Windows a force-killed command settles as `[exit code: 1]` without a signal marker — treat it as an interruption, not a command failure. Commands may run under a file sandbox; a blocked file operation is reported as `[sandbox: file access denied under <mode> mode]`, a policy denial: do not retry another way. Under the Windows sandbox, read-only pwsh runs in PowerShell ConstrainedLanguage mode, while workspace-write stays in FullLanguage unless host policy says otherwise. In read-only, prefer cmdlets and core types (`[string]`, `[datetime]`, `[regex]`, `[guid]`); .NET static calls (`[System.IO.*]::`, `[math]::`), `Add-Type`, COM objects, and reflection fail with \"only core types\" errors. `-f` formatting, property access, and core cmdlets work. In both confined modes, programs cannot open named pipes, so a command that captures another program's output through piped stdio (Node.js `child_process.spawn`/`exec` with the default `stdio: 'pipe'`) fails with EPERM, while `stdio: 'inherit'` and `stdio: 'ignore'` spawns work and PowerShell's own pipelines are unaffected. That EPERM is the documented boundary: do not retry the command another way — escalate the exact command once or restructure it to avoid capturing output.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The PowerShell command to execute."
+          },
+          "description": {
+            "type": "string",
+            "description": "Clear, concise description of what this command does in active voice, 5-10 words (shown in the UI). Examples: \"ls\" → \"List files in current directory\"; \"git status\" → \"Show working tree status\"; \"Get-Process\" → \"List running processes\"."
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Timeout in milliseconds. The executor applies its configured default and cap; on expiry the command moves to the background as a job instead of being killed."
+          },
+          "workdir": {
+            "type": "string",
+            "description": "Working directory for this command. Defaults to the session workspace; a relative path is resolved against it."
+          },
+          "run_in_background": {
+            "type": "boolean",
+            "description": "Run in the background and return a job id immediately (collect with job_output, stop with job_kill). No timeout applies."
+          },
+          "sandbox_permissions": {
+            "type": "string",
+            "description": "The narrowest wider sandbox mode for a one-shot retry of the exact command the sandbox just denied; the retry asks the user for approval.",
+            "enum": [
+              "workspace-write",
+              "danger-full-access"
+            ]
+          },
+          "justification": {
+            "type": "string",
+            "description": "Required with sandbox_permissions: one sentence for the user explaining why this exact command needs the wider access. Use the language of the user’s current request."
+          }
+        },
+        "required": [
+          "command",
+          "description"
+        ]
+      }
+    },
+    {
+      "name": "read",
+      "description": "Read a UTF-8 text file and return line-numbered content.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to read, resolved by the filesystem backend."
+          },
+          "offset": {
+            "type": "number",
+            "description": "1-based first line to return. Defaults to 1."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of lines to return. Defaults to 2000."
+          }
+        },
+        "required": [
+          "file_path"
+        ]
+      }
+    },
+    {
+      "name": "read_image",
+      "description": "Read a PNG/JPEG/WebP/GIF file and return the image itself. Large images are downscaled automatically; do not install image libraries or create thumbnails to inspect an image.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to the image file, resolved by the filesystem backend."
+          }
+        },
+        "required": [
+          "file_path"
+        ]
+      }
+    },
+    {
+      "name": "run_code",
+      "description": "Execute a TypeScript program against the available tools. Takes two required arguments: `code`, the BODY of an async function (erasable syntax only; top-level `await` and `return` work), and `description`, a short summary of what the program does. Call tools as `await tools.name(args)` per the declarations in the system prompt. Only what you print or return is program output — curate it. Image-bearing subtool results are attached after the run. Each call runs in a fresh Node process. Node APIs are available through await import(...). Relative paths use the supplied working directory; process.env starts empty. Direct filesystem access follows this execution's sandbox policy. The working directory is the Session's current directory. A sandbox escalation approves this complete program for one execution only. Nested tools retain their own policies and approvals. Request wider access only after evidence of a denial. Earlier effects may already have completed: inspect them before explicitly retrying. Programs are never replayed automatically.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The program: the body of an async TypeScript function."
+          },
+          "description": {
+            "type": "string",
+            "description": "Clear, concise description of what this program does in active voice, 5-10 words (shown in the UI). Examples: \"Count TODO markers across packages\"; \"Read failing test and its fixture\"; \"Rename config key in every cordis.yml\"."
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Positive elapsed-time budget in milliseconds, including nested tool and approval waits. Default 120000; capped at 600000. Zero does not disable the deadline."
+          },
+          "sandbox_permissions": {
+            "type": "string",
+            "description": "Wider sandbox mode for this complete program execution; requires justification and approval.",
+            "enum": [
+              "workspace-write",
+              "danger-full-access"
+            ]
+          },
+          "justification": {
+            "type": "string",
+            "description": "Reason this complete program needs wider access, shown to the user for approval. Use the language of the user’s current request."
+          }
+        },
+        "required": [
+          "code",
+          "description"
+        ]
+      }
+    },
+    {
+      "name": "send_message",
+      "description": "Send a message to an agent. A working agent receives it at its next step; an idle agent starts a new turn with it. Returns delivery confirmation, not the agent's answer.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The agent id of your direct continuable child, or your direct parent when you are a resident continuable child."
+          },
+          "message": {
+            "type": "string",
+            "description": "The message to deliver to the agent."
+          }
+        },
+        "required": [
+          "agent_id",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "skill",
+      "description": "Load the full instructions for a skill. Call it before acting on a task that names or clearly matches a skill in the session skill catalog.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The exact skill name from the available skills list."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "subagent",
+      "description": "Delegate a self-contained task to a subagent (a separate agent that works in its own context) to offload focused, independent work — research, a scoped implementation, an analysis — so it does not consume this conversation's context. The subagent returns its result, not its intermediate steps. It runs in the background by default and returns a subagent id you can continue with `send_message`; you are notified when the run settles.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A short (3-5 word) description of the delegated task, for display."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "The complete, self-contained task for the subagent. It does not share this conversation's context, so include everything it needs."
+          },
+          "run_in_background": {
+            "type": "boolean",
+            "description": "Defaults to true. Set false only when your next action depends on the result."
+          }
+        },
+        "required": [
+          "description",
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "subagent_fork",
+      "description": "Delegate a task to a subagent that inherits this conversation: a child agent seeded with all completed turns so far (it does not see the current in-flight turn). Use this when the subtask builds on this conversation's context — a follow-up analysis, a review, a continuation — without consuming this conversation's context for the work itself. You receive its result, not its intermediate steps. This call waits for the subagent and returns its result.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A short (3-5 word) description of the delegated task, for display."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "The task for the subagent. It already sees this conversation's completed turns, so build on them freely and state only what is new."
+          }
+        },
+        "required": [
+          "description",
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "todo_write",
+      "description": "Record and update a task list to plan multi-step work and show progress; skip it for trivial single-step tasks. Add one todo per concrete step before you start. While work remains, keep the todos being worked on `in_progress`, several only when work runs in parallel. Mark each todo `completed` as soon as it is done.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "todos": {
+            "type": "array",
+            "description": "The COMPLETE task list, replacing any previous list.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "description": "What the task is — a short imperative line."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "pending (not started) | in_progress (now) | completed (done).",
+                  "enum": [
+                    "pending",
+                    "in_progress",
+                    "completed"
+                  ]
+                }
+              },
+              "required": [
+                "content",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "todos"
+        ]
+      }
+    },
+    {
+      "name": "update_goal",
+      "description": "Update the current goal.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "description": "Exact id returned by get_goal."
+          },
+          "revision": {
+            "type": "number",
+            "description": "Exact positive revision returned by get_goal."
+          },
+          "action": {
+            "type": "string",
+            "description": "edit, pause, and resume require a direct top-level human request. complete and blocked are also allowed during an automatic continuation of this goal; blocked is rejected before the configured minimum round count.",
+            "enum": [
+              "edit",
+              "pause",
+              "resume",
+              "complete",
+              "blocked"
+            ]
+          },
+          "objective": {
+            "type": "string",
+            "description": "Replacement objective; valid only with action edit."
+          },
+          "max_goal_rounds": {
+            "type": "number",
+            "description": "Replacement cap; valid only with action edit."
+          },
+          "blocked_reason": {
+            "type": "string",
+            "description": "Required only with action blocked: the concrete condition that persisted across rounds and blocks progress."
+          }
+        },
+        "required": [
+          "goal_id",
+          "revision",
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "web_fetch",
+      "description": "Fetch the content of a specific HTTP(S) URL and return it decoded to text.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The HTTP(S) URL to fetch."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "web_search",
+      "description": "Search the web for current information. Returns an optional summary answer and a list of source URLs.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "description": "1–4 search queries; their results are merged.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "queries"
+        ]
+      }
+    },
+    {
+      "name": "workflow",
+      "description": "Run a JavaScript workflow script that orchestrates subagents at scale. Use this for work that fans out across many independent pieces — an audit over many files, a migration, multi-angle research, adversarial verification of findings — where you write the orchestration as a script instead of delegating turn by turn.\n\nScript-body hooks:\n- `agent(prompt, opts?): Promise<any>` — run one subagent to completion. Without `opts.schema` it resolves to the child's final text; with `opts.schema` (an object-rooted JSON Schema using ONLY type/properties/required/additionalProperties/items/enum/const/oneOf) it resolves to the validated object. Resolves `null` when the child fails (filter with `.filter(Boolean)`). Other opts: `label` (display), `phase` (progress group), and independent `provider`/`model` LLM target overrides.\n- `pipeline(items, ...stages): Promise<any[]>` — run each item through the stages independently with NO barrier between stages (prefer this for multi-stage work). Each stage receives `(prev, item, index)`. A stage throw drops that ITEM to `null` and skips its remaining stages.\n- `parallel(thunks): Promise<any[]>` — run zero-argument functions concurrently and await ALL of them (a barrier; use only when a stage genuinely needs every prior result together). A throwing thunk resolves to `null`.\n- `phase(title)` — start a progress phase; `log(message)` — narrate progress; `args` — the tool call's `args` input, verbatim.\n\nMisused hooks (bad arguments, unknown options, unsupported schemas, tripped caps) end the whole script instead of producing `null`. The script has no filesystem, network, timer, or Node.js APIs; the agents do the work.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "The plain JavaScript body, not TypeScript and without an `export const meta` statement; top-level await is allowed. End with `return <value>`; the JSON-serializable value is this tool's result."
+          },
+          "meta": {
+            "type": "object",
+            "description": "The workflow identity as plain JSON, not code.",
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Short kebab-case workflow name."
+              },
+              "description": {
+                "type": "string",
+                "description": "One-line description of what the workflow does."
+              },
+              "whenToUse": {
+                "type": "string",
+                "description": "Optional guidance on when this workflow applies."
+              },
+              "phases": {
+                "type": "array",
+                "description": "Optional phase declarations matched by phase() calls.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "The phase title phase() calls match by exact string."
+                    },
+                    "detail": {
+                      "type": "string",
+                      "description": "Optional one-line description of the phase."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Optional provider override this phase is expected to use."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Optional model override this phase is expected to use."
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ]
+          },
+          "args": {
+            "type": "object",
+            "description": "Optional JSON input exposed to the script as the `args` global (wrap a bare list as a field, e.g. {\"files\": [...]}).",
+            "additionalProperties": true
+          },
+          "run_in_background": {
+            "type": "boolean",
+            "description": "Run as a background job: return a job id immediately instead of waiting; the return value arrives with the completion notice."
+          }
+        },
+        "required": [
+          "script",
+          "meta"
+        ]
+      }
+    },
+    {
+      "name": "write",
+      "description": "Create or fully replace a UTF-8 text file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to write, resolved by the filesystem backend."
+          },
+          "content": {
+            "type": "string",
+            "description": "Full UTF-8 text content to write."
+          },
+          "sandbox_permissions": {
+            "type": "string",
+            "description": "The narrowest wider sandbox mode for a one-shot retry of the exact operation the sandbox just denied; the retry asks the user for approval.",
+            "enum": [
+              "workspace-write",
+              "danger-full-access"
+            ]
+          },
+          "justification": {
+            "type": "string",
+            "description": "Required with sandbox_permissions: one sentence for the user explaining why this exact file operation needs the wider access. Use the language of the user’s current request."
+          }
+        },
+        "required": [
+          "file_path",
+          "content"
+        ]
+      }
+    }
+  ],
+  "changes": []
+}

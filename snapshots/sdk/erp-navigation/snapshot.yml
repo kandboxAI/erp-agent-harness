@@ -1,0 +1,8 @@
+version: 1
+scenario: erp-navigation
+profile: sdk
+composition: both
+recording: authored
+header:
+  class: erp-navigation
+  pin: true

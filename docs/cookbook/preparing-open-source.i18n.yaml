@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for preparing-open-source.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/cookbook/preparing-open-source.md
+/cookbook-preparing-public-source:
+  en: 68e5d84c27b27add
+  zh: 2b07a966fef8bdfa
+/cookbook-preparing-public-source/1-check-the-source:
+  en: 7aab4b70dd4b97b6
+  zh: d770e6bcdea4cc22
+/cookbook-preparing-public-source/2-export-a-new-directory:
+  en: f2022c90bae9286a
+  zh: 20cced290bec3ee0
+/cookbook-preparing-public-source/3-verify-the-public-build:
+  en: b236fb66e31b3928
+  zh: f8a4d52adfeff0c8

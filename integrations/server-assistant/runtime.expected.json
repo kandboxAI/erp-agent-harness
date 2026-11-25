@@ -1,0 +1,8 @@
+{
+  "tools": ["education_erp_api", "education_erp_discover", "education_erp_query"],
+  "answers": ["模拟统计完成", "模拟统计完成"],
+  "discovery_action": "search",
+  "restored_question": true,
+  "restored_answer": true,
+  "streamed_text": ["模拟统计完成", "模拟统计完成"]
+}

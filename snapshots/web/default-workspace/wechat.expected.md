@@ -1,0 +1,7 @@
+- navigation:
+  - text: Settings
+  - button "General"
+  - button "Models"
+  - button "Built-in plugins"
+  - button "Agent presets"
+  - button "WeChat"

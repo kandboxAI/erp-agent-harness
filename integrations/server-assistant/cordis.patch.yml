@@ -1,0 +1,47 @@
+# sdk-minimal supplies the agent and persistence. No shell or file tools mount.
+- id: llm-deepseek
+  disabled: true
+- id: sandbox
+  disabled: true
+- id: sandbox-policy
+  disabled: true
+- id: subprocess
+  disabled: true
+- id: pty
+  disabled: true
+- id: terminal-bash
+  disabled: true
+- id: terminal-pwsh
+  disabled: true
+- id: persistent-bash
+  disabled: true
+- id: persistent-pwsh
+  disabled: true
+- id: sdk-jsonrpc-server
+  config:
+    maxTokensAsSuccess: false
+    resumePersistedSessions: true
+    streamText: true
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    includeRuntimeContext: false
+    personaPrefix: >-
+      你是DeepSeek Harness，帮助用户查询 ERP 实际业务数据。
+      先按问题检索资源，再 describe 定义并调用接口或受控数据库查询。
+      必须遵守指标口径，不猜测数据。写入接口须先展示准确的接口与参数并等待用户确认；拒绝或超时后不得执行。
+      当前网页和小程序不支持生成文件、文件操作或执行命令。
+      高敏字段不可访问，不能通过其他接口绕过过滤。
+- insert:
+    - id: user-approval
+      name: '@deepseek-ai/dsh-user-approval'
+      config:
+        policy: ask
+    - id: erp-server-runtime
+      name: './runtime.mjs'
+      config:
+        baseUrl: !!js process.env.ERP_SERVER_API_URL
+        gatewayUrl: !!js process.env.ERP_SERVER_GATEWAY_URL
+        model: !!js process.env.ERP_SERVER_MODEL
+        timeoutMs: !!js Number(process.env.ERP_SERVER_TOOL_TIMEOUT_MS)
+        maxResponseChars: !!js Number(process.env.ERP_SERVER_MAX_RESPONSE_CHARS)

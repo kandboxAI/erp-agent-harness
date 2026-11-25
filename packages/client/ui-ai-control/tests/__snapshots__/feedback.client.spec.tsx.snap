@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`presents failed with candidate=true and retains the draft 1`] = `"自动检查未完成，是否手动反馈？申请未提交完成情况检查超时，可以重试或直接手动反馈。填写反馈会打开可编辑草稿；你确认提交后，才会发送到控制中心。暂不反馈重试检查手动反馈"`;
+
+exports[`presents incomplete with candidate=true and retains the draft 1`] = `"这次任务似乎还未完成，是否反馈？申请未提交填写反馈会打开可编辑草稿；你确认提交后，才会发送到控制中心。暂不反馈填写反馈"`;

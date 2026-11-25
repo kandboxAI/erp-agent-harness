@@ -1,0 +1,6 @@
+- id: llm-replay
+  disabled: true
+
+- insert:
+    - id: erp-discovery-fixture
+      name: './erp.mjs'

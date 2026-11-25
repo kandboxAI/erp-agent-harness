@@ -1,0 +1,68 @@
+diff --git a/dist/bridge/bridge.js b/dist/bridge/bridge.js
+index c82f13f77f..e994d9fa0d 100644
+--- a/dist/bridge/bridge.js
++++ b/dist/bridge/bridge.js
+@@ -1381,1 +1381,2 @@
+-                    this.loginState = { ...this.loginState, phase: "waiting-qr", qrUrl: url };
++                    if (abort.signal.aborted) return;
++                    this.loginState = { ...this.loginState, phase: "waiting-qr", qrUrl: url };
+@@ -1387,1 +1388,2 @@
+-            this.token = token;
++            abort.signal.throwIfAborted();
++            this.token = token;
+@@ -1397,1 +1399,1 @@
+-                this.loginState = { phase: "idle" };
++                // 被取消的旧扫码流程不能覆盖新登录状态。
+diff --git a/dist/client.js b/dist/client.js
+index 6db3c4ab79..5861421887 100644
+--- a/dist/client.js
++++ b/dist/client.js
+@@ -26,1 +26,1 @@
+-		const inject = ["slots"];
++		const inject = ["slots", "locale"];
+@@ -697,1 +697,1 @@
+-		function WechatSection() {
++		function WechatSection({ t }) {
+@@ -937,1 +937,1 @@
+-						createElement("span", { className: "wx_title" }, "WeChat"),
++						createElement("span", { className: "wx_title" }, t("title")),
+@@ -1223,1 +1223,6 @@
+-			// Park the registration on the plugin's fiber. `slots.inject`
++			ctx.effect(() => ctx.locale.register("dsh-wechat", {
++				zh: { title: "微信" },
++				en: { title: "WeChat" },
++			}));
++			const t = ctx.locale.bind("dsh-wechat");
++			// Park the registration on the plugin's fiber. `slots.inject`
+@@ -1234,1 +1239,2 @@
+-				label: "WeChat",
++				locale: "dsh-wechat",
++				label: () => t("title"),
+diff --git a/dist/weixin/auth.js b/dist/weixin/auth.js
+index 8623bc7b0a..b8bb80c082 100644
+--- a/dist/weixin/auth.js
++++ b/dist/weixin/auth.js
+@@ -67,1 +67,2 @@
+-    log("Starting WeChat QR login...");
++    abortSignal?.throwIfAborted();
++    log("Starting WeChat QR login...");
+@@ -69,1 +70,2 @@
+-    const qrcodeUrl = qrResp.qrcode_img_content;
++    abortSignal?.throwIfAborted();
++    const qrcodeUrl = qrResp.qrcode_img_content;
+@@ -84,1 +86,2 @@
+-        switch (statusResp.status) {
++        abortSignal?.throwIfAborted();
++        switch (statusResp.status) {
+@@ -97,1 +100,2 @@
+-                currentQrcode = newQr.qrcode;
++                abortSignal?.throwIfAborted();
++                currentQrcode = newQr.qrcode;
+diff --git a/package.json b/package.json
+index f50348b255..1b2f0cd222 100644
+--- a/package.json
++++ b/package.json
+@@ -58,1 +58,2 @@
+-        "@deepseek-ai/dsh-client-ui-slots"
++        "@deepseek-ai/dsh-client-ui-slots",
++        "@deepseek-ai/dsh-client-locale"

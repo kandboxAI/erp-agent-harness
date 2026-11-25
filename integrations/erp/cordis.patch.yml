@@ -1,0 +1,10 @@
+# Optional ERP tools. The ERP backend enforces user permissions and data scope.
+- insert:
+    - id: erp-api
+      name: '@deepseek-ai/dsh-tool-education-erp'
+      config:
+        baseUrl: !!js process.env.EDUCATION_ERP_API_URL || 'http://127.0.0.1:8000/'
+        timeoutMs: 30000
+        maxResponseChars: 50000
+        knowledgeFiles: true
+        skillSources: []

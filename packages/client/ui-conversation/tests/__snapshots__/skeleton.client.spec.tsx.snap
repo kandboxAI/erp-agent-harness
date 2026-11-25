@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Hero chrome > uses the suite product name and icon on the empty conversation home > suite hero 1`] = `
+<div>
+  <div
+    class="_root_0aaf6f"
+  >
+    <div
+      class="_stack_0aaf6f"
+    >
+      <div
+        class="_headline_0aaf6f"
+      >
+        <span
+          class="_brandMarkHitbox_0aaf6f"
+        >
+          <img
+            alt=""
+            aria-hidden="true"
+            class="_brandMark_0aaf6f"
+            src="data:image/png;base64,c3VpdGUtaWNvbg=="
+            style="width: 34px; height: 34px; object-fit: contain;"
+          />
+        </span>
+        <span
+          class="_titleGroup_0aaf6f"
+        >
+          <span>
+            MES 智能助手
+          </span>
+          <span
+            class="_previewBadge_0aaf6f"
+          >
+            Preview
+          </span>
+        </span>
+      </div>
+      <div
+        class="_body_0aaf6f"
+      />
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,5 @@
+- id: llm-replay
+  disabled: true
+- insert:
+    - id: erp-navigation-fixture
+      name: './erp.mjs'

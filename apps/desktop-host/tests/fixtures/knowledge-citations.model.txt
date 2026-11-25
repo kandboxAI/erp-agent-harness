@@ -1,0 +1,6 @@
+[
+  {
+    "type": "text",
+    "text": "{\n  \"status\": 200,\n  \"ok\": true,\n  \"method\": \"POST\",\n  \"data\": {\n    \"results\": [\n      {\n        \"document_id\": \"01900000-0000-7000-8000-000000000001\",\n        \"document_name\": \"报销制度\",\n        \"chunk_index\": 2,\n        \"chunk_no\": \"chunk-a\",\n        \"source_hash_snapshot\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n        \"content\": \"住宿标准为每晚380元\",\n        \"truncated\": false,\n        \"score\": 0.8,\n        \"citation_url\": \"dsh-resource://knowledge/01900000-0000-7000-8000-000000000001/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/chunk-a\"\n      }\n    ],\n    \"diagnostics\": [\n      {\n        \"applied\": true,\n        \"outcome\": \"ok\"\n      }\n    ],\n    \"recall_state\": \"matched\"\n  }\n}"
+  }
+]

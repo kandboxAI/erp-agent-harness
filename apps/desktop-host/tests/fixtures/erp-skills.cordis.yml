@@ -1,0 +1,11 @@
+- name: 'cordis:system-prompt'
+- name: 'cordis:tools'
+- name: 'cordis:skills'
+- name: 'cordis:sessions'
+- name: 'cordis:agents'
+- name: 'cordis:session-projections'
+- name: 'cordis:session-query'
+  config:
+    path: ':memory:'
+    openAt: never
+- name: 'cordis:education-erp-data'
